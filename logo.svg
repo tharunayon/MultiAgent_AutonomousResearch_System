@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+  <defs>
+    <!-- Linear Gradients for modern, premium look -->
+    <linearGradient id="bodyGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0052FF" />
+      <stop offset="100%" stop-color="#00C6FF" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#70E000" />
+      <stop offset="100%" stop-color="#AACC00" />
+    </linearGradient>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9EF01A" />
+      <stop offset="100%" stop-color="#38B000" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Graphics Group -->
+  <g transform="translate(10, 10)">
+    <!-- Elliptical halo orbit around the star and raised hand -->
+    <ellipse cx="120" cy="40" rx="38" ry="9" fill="none" stroke="url(#accentGrad)" stroke-width="3" transform="rotate(-15, 120, 40)" />
+
+    <!-- Stylized 4-point Sparkle Star -->
+    <path d="M 120,20 L 123.5,28.5 L 132,30 L 123.5,31.5 L 120,40 L 116.5,31.5 L 108,30 L 116.5,28.5 Z" fill="url(#starGrad)" />
+
+    <!-- Stylized human figure - Raised hand and body curves -->
+    <!-- Curved vertical back swoosh (purple highlight) -->
+    <path d="M 103,115 C 103,100 112,65 119,45 C 121,40 120,38 120,38 C 120,38 123,42 121,48 C 117,68 111,98 103,115 Z" fill="#7209B7" />
+    
+    <!-- Curved active cross swoosh (vibrant blue-teal gradient) -->
+    <path d="M 102,112 C 110,95 125,75 160,70 C 145,76 130,90 127,100 C 124,110 135,118 165,115 C 145,118 135,120 126,110 C 118,100 110,110 102,112 Z" fill="url(#bodyGrad)" />
+
+    <!-- Head of the figure -->
+    <circle cx="138" cy="54" r="12" fill="#0052FF" />
+
+    <!-- Graduation Cap (Mortarboard) -->
+    <polygon points="122,46 138,38 154,46 138,54" fill="url(#accentGrad)" />
+    <!-- Graduation Cap Cap base -->
+    <rect x="134" y="49" width="8" height="5" fill="url(#accentGrad)" rx="1" />
+    <!-- Tassel -->
+    <path d="M 148,46 L 153,52 L 156,52" stroke="url(#accentGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- High-fidelity custom text layout -->
+  <text x="150" y="200" font-family="'Inter', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="25" fill="#0F172A" text-anchor="middle" letter-spacing="1.5">
+    DHANVA TEACH
+  </text>
+</svg>

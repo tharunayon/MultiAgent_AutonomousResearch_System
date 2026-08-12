@@ -1,4 +1,4 @@
-# DHANUA TEACH - Multi-Agent Healthcare RAG Portal
+# DHANVA TEACH - Multi-Agent Healthcare RAG Portal
 
 A production-ready Healthcare Retrieval-Augmented Generation (RAG) portal built using Python, Streamlit, and the Groq API (running Llama 3 models for ultra-fast medical inference). 
 
