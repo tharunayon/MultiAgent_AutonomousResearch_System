@@ -6,8 +6,8 @@ from agents.health_agents import HealthcareAgentSystem
 
 # Page configuration
 st.set_page_config(
-    page_title="HealthRAG - Multi-Agent Portal",
-    page_icon="🩺",
+    page_title="Dhanua Teach - Multi-Agent Portal",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -219,12 +219,19 @@ def generate_sample_files():
 # Initialize states
 init_rag_state()
 
-# Title text header
-st.markdown("<div class='main-header'>🩺 Antigravity Healthcare Portal</div>", unsafe_allow_html=True)
-st.markdown("<div class='sub-header'>Multi-Agent Clinical Retrieval Augmented Generation (RAG) System</div>", unsafe_allow_html=True)
+# Title text header with logo integration
+col_logo, col_title = st.columns([1, 6])
+with col_logo:
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=110)
+with col_title:
+    st.markdown("<div class='main-header'>DHANUA TEACH HealthRAG</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub-header'>Multi-Agent Clinical Retrieval Augmented Generation (RAG) System</div>", unsafe_allow_html=True)
 
 # ----------------- SIDEBAR CONTROLS -----------------
-st.sidebar.title("🛡️ Healthcare Control Room")
+if os.path.exists("logo.png"):
+    st.sidebar.image("logo.png", width=150)
+st.sidebar.title("🛡️ Dhanua Teach Control Panel")
 
 # Render role selector switcher
 render_auth_sidebar()

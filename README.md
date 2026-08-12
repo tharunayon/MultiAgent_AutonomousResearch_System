@@ -1,4 +1,4 @@
-# Multi-Agent Healthcare RAG Web Application
+# DHANUA TEACH - Multi-Agent Healthcare RAG Portal
 
 A production-ready Healthcare Retrieval-Augmented Generation (RAG) portal built using Python, Streamlit, and the Groq API (running Llama 3 models for ultra-fast medical inference). 
 
@@ -9,7 +9,7 @@ The system implements Role-Based Access Control (RBAC) to dynamically restrict c
 ## ⚙️ Core Architecture
 
 The application has been modularized across separate files:
-1. **Frontend View Controller (`app.py`)**: Hosts the primary dashboard layout, dark-theme styling, multi-agent status reporting, and file cataloging tables.
+1. **Frontend View Controller (`app.py`)**: Hosts the primary dashboard layout, vibrant light-theme styling, logo brand asset, guide chatbot assistant, and file cataloging tables.
 2. **Multi-Agent Engine (`agents/health_agents.py`)**: Hosts the four coordinating agents:
    - **Orchestration Agent**: Evaluates user profiles and matches routing protocols.
    - **Clinical Research Agent**: Deep technical medical analysis with ICD codes and clinical trials.
