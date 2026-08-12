@@ -219,6 +219,40 @@ def generate_sample_files():
 # Initialize states
 init_rag_state()
 
+# Auto-ingest documents from the local knowledge base on startup
+if "knowledge_base_loaded" not in st.session_state:
+    st.session_state.knowledge_base_loaded = False
+
+if not st.session_state.knowledge_base_loaded:
+    public_dir = os.path.join("knowledge_base", "public")
+    restricted_dir = os.path.join("knowledge_base", "restricted")
+    
+    # Ensure directories exist
+    os.makedirs(public_dir, exist_ok=True)
+    os.makedirs(restricted_dir, exist_ok=True)
+    
+    # Ingest public files
+    for f_name in os.listdir(public_dir):
+        if f_name.lower().endswith(".pdf"):
+            f_path = os.path.join(public_dir, f_name)
+            try:
+                with open(f_path, "rb") as f:
+                    ingest_pdf(f, "public_patient")
+            except Exception as e:
+                st.error(f"Error loading public file {f_name}: {e}")
+                
+    # Ingest restricted files
+    for f_name in os.listdir(restricted_dir):
+        if f_name.lower().endswith(".pdf"):
+            f_path = os.path.join(restricted_dir, f_name)
+            try:
+                with open(f_path, "rb") as f:
+                    ingest_pdf(f, "doctor_only")
+            except Exception as e:
+                st.error(f"Error loading restricted file {f_name}: {e}")
+                
+    st.session_state.knowledge_base_loaded = True
+
 # Title text header with logo integration
 col_logo, col_title = st.columns([1, 6])
 with col_logo:

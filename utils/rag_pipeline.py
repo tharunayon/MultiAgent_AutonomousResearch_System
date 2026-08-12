@@ -65,7 +65,7 @@ def ingest_pdf(pdf_file, visibility: str) -> dict:
     """Extracts, chunks, embeds and saves a PDF into the appropriate FAISS index based on RBAC metadata."""
     init_rag_state()
     
-    filename = pdf_file.name
+    filename = os.path.basename(pdf_file.name)
     # Avoid duplicate file ingestion
     if any(doc["filename"] == filename for doc in st.session_state.uploaded_documents):
         return {"success": False, "message": f"Document '{filename}' is already ingested."}
