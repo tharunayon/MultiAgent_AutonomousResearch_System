@@ -282,15 +282,28 @@ visibility_setting = st.sidebar.selectbox(
     format_func=lambda x: "Public Patient (All)" if x == "public_patient" else "Doctor Only (Restricted)"
 )
 
+# Persistent notification state for uploads
+if "upload_success" not in st.session_state:
+    st.session_state.upload_success = None
+if "last_uploaded_file" not in st.session_state:
+    st.session_state.last_uploaded_file = None
+
+if uploaded_file != st.session_state.last_uploaded_file:
+    st.session_state.last_uploaded_file = uploaded_file
+    st.session_state.upload_success = None
+
 if uploaded_file is not None:
     if st.sidebar.button("📥 Process & Ingest into RAG"):
         with st.spinner("Analyzing document structure..."):
             res = ingest_pdf(uploaded_file, visibility_setting)
             if res["success"]:
-                st.sidebar.success(res["message"])
+                st.session_state.upload_success = res["message"]
                 st.rerun()
             else:
                 st.sidebar.error(res["message"])
+
+if st.session_state.upload_success:
+    st.sidebar.success(st.session_state.upload_success)
 
 # Reset vector database button
 if st.sidebar.button("🗑️ Reset Vector Database"):
@@ -516,6 +529,7 @@ else:
     with tab_plibrary:
         st.markdown("### 📖 Ingested Document Directory (Public)")
         public_docs = [doc for doc in st.session_state.uploaded_documents if doc["visibility"] == "public_patient"]
+        hidden_count = len(st.session_state.uploaded_documents) - len(public_docs)
         
         if not public_docs:
             st.info("No public patient documents have been uploaded to the database. Ask your provider to upload them.")
@@ -530,4 +544,7 @@ else:
                 })
             st.table(doc_data)
             
-        st.info("🔒 Note: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
+        if hidden_count > 0:
+            st.warning(f"🔒 Note: {hidden_count} restricted clinical document(s) are currently loaded as 'Doctor Only' and are mathematically isolated from this view.")
+        else:
+            st.info("🔒 Note: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
