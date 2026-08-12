@@ -15,27 +15,75 @@ st.set_page_config(
 # Custom CSS for modern light-themed aesthetics and layout controls
 st.markdown("""
 <style>
-    /* Styling headers and custom cards */
-    .main-header {
-        font-size: 2.2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #0052FF 0%, #FF007F 100%);
+    /* Google Fonts import */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700;800&display=swap');
+
+    /* Grid pattern background globally */
+    .stApp {
+        background-color: #FFFFFF;
+        background-image: radial-gradient(#E2E8F0 1.2px, transparent 1.2px);
+        background-size: 24px 24px;
+        font-family: 'Inter', sans-serif !important;
+    }
+    
+    /* Outlined fonts for main elements */
+    h1, h2, h3, .main-header {
+        font-family: 'Outfit', sans-serif !important;
+    }
+
+    /* Redesigned Hero Elements */
+    .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        background-color: #FFEAEF;
+        color: #E05353;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        border: 1px solid #FFD1DC;
+    }
+    .hero-title {
+        font-size: 3.2rem;
+        font-weight: 850;
+        line-height: 1.15;
+        color: #1E293B;
+        margin-bottom: 1.2rem;
+    }
+    .hero-highlight {
+        color: #FF4B4B;
+        background: linear-gradient(120deg, #FF4B4B 0%, #FF2E93 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.2rem;
     }
-    .sub-header {
-        font-size: 1.1rem;
+    .hero-desc {
+        font-size: 1.15rem;
+        color: #475569;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    .hero-sublinks {
+        font-size: 0.9rem;
+        font-weight: 600;
         color: #64748B;
         margin-bottom: 2rem;
+        display: flex;
+        gap: 0.8rem;
     }
+    .hero-sublink-item {
+        background-color: #F1F5F9;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+    }
+
+    /* Role badges styling */
     .role-badge {
         padding: 0.4rem 1rem;
         border-radius: 50px;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 0.85rem;
         display: inline-block;
-        margin-bottom: 1.5rem;
     }
     .badge-doctor {
         background-color: #FEE2E2;
@@ -47,31 +95,52 @@ st.markdown("""
         color: #166534;
         border: 1px solid #86EFAC;
     }
-    /* Citation block cards */
-    .citation-card {
-        background-color: #F8FAFC;
-        border-left: 4px solid #0052FF;
-        padding: 0.8rem;
-        border-radius: 4px;
-        margin-bottom: 0.8rem;
-        border-top: 1px solid #E2E8F0;
-        border-right: 1px solid #E2E8F0;
-        border-bottom: 1px solid #E2E8F0;
+    
+    /* Bright blue button style override for Streamlit buttons */
+    div.stButton > button:first-child {
+        background-color: #0052FF !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        padding: 0.6rem 2rem !important;
+        border-radius: 8px !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 82, 255, 0.2), 0 2px 4px -1px rgba(0, 82, 255, 0.1) !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    div.stButton > button:first-child:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 82, 255, 0.3), 0 4px 6px -2px rgba(0, 82, 255, 0.15) !important;
+    }
+    
+    /* General cards styling */
+    .citation-card, div[data-testid="stExpander"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+        padding: 1.2rem !important;
+        margin-bottom: 1.2rem !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .citation-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !important;
     }
     .citation-source {
-        font-weight: 600;
-        font-size: 0.8rem;
+        font-weight: 700;
+        font-size: 0.85rem;
         color: #0369A1;
     }
     .citation-score {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         color: #64748B;
         float: right;
     }
     .citation-text {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         color: #334155;
-        margin-top: 0.3rem;
+        margin-top: 0.5rem;
         font-style: italic;
     }
 </style>
@@ -253,29 +322,62 @@ if not st.session_state.knowledge_base_loaded:
                 
     st.session_state.knowledge_base_loaded = True
 
-# Title text header with logo integration
-col_logo, col_title = st.columns([1, 6])
-with col_logo:
-    if os.path.exists("logo.svg"):
-        st.image("logo.svg", width=110)
-with col_title:
-    st.markdown("<div class='main-header'>DHANVA TEACH HealthRAG</div>", unsafe_allow_html=True)
-    st.markdown("<div class='sub-header'>Multi-Agent Clinical Retrieval Augmented Generation (RAG) System</div>", unsafe_allow_html=True)
+# ----------------- TOP NAVBAR HEADER -----------------
+col_nav_left, col_nav_right = st.columns([7, 3])
+with col_nav_left:
+    col_nav_logo, col_nav_title = st.columns([1, 6])
+    with col_nav_logo:
+        if os.path.exists("logo.svg"):
+            st.image("logo.svg", width=55)
+    with col_nav_title:
+        st.markdown(
+            "<div style='margin-top: 10px; font-family: \"Outfit\"; font-weight: 850; font-size: 1.8rem; color: #1E293B;'>"
+            "DHANVA TEACH <span style='color: #FF4B4B; font-weight: 500; font-size: 1.2rem;'>HealthRAG</span>"
+            "</div>",
+            unsafe_allow_html=True
+        )
+with col_nav_right:
+    role = get_user_role()
+    if role == ROLE_DOCTOR:
+        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-doctor'>🩺 Practitioner Mode</span></div>"
+    else:
+        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-patient'>👤 Patient Mode</span></div>"
+    st.markdown(badge_html, unsafe_allow_html=True)
 
 # ----------------- SIDEBAR CONTROLS -----------------
-if os.path.exists("logo.svg"):
-    st.sidebar.image("logo.svg", width=150)
-st.sidebar.title("🛡️ Dhanva Teach Control Panel")
+st.sidebar.markdown("### 🛡️ Portal Management")
 
 # Render role selector switcher
 render_auth_sidebar()
-role = get_user_role()
 
-# Badge displaying active user role context
-if role == ROLE_DOCTOR:
-    st.markdown("<div class='role-badge badge-doctor'>🔐 Access Level: Authorized Medical Practitioner (Doctor)</div>", unsafe_allow_html=True)
-else:
-    st.markdown("<div class='role-badge badge-patient'>🔓 Access Level: Normal Patient</div>", unsafe_allow_html=True)
+# ----------------- HERO SECTION -----------------
+st.markdown("<hr style='margin-top: 0.5rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
+
+hero_col1, hero_col2 = st.columns([1.1, 0.9])
+
+with hero_col1:
+    st.markdown("""
+    <div class="hero-pill">✨ Gold Standard Medical Retrieval</div>
+    <div class="hero-title">Learn & Search<br>with <span class="hero-highlight">Dhanva Teach</span></div>
+    <div class="hero-desc">
+        Access isolated clinical trial data, consult diagnostic guidelines, and query multi-agent systems with absolute safety. 
+        Features role-isolated indexes and automated clinical fact-checking.
+    </div>
+    <div class="hero-sublinks">
+        <span class="hero-sublink-item">🏥 Clinically-Oriented</span>
+        <span class="hero-sublink-item">🛡️ Fact-Checked</span>
+        <span class="hero-sublink-item">🔒 Role-Isolated</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🚀 Enter Portal Workspace", key="enter_workspace"):
+        st.info("Scroll down to access the interactive portal workspace.")
+
+with hero_col2:
+    if os.path.exists("medical_hero_illustration.png"):
+        st.image("medical_hero_illustration.png", use_container_width=True)
+
+st.markdown("<hr style='margin-top: 2rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
 
 # Groq API Key management (loaded silently from backend, not shown to users)
 groq_key = ""
