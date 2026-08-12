@@ -1,48 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 240" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" width="100%" height="100%">
   <defs>
-    <!-- Linear Gradients for modern, premium look -->
-    <linearGradient id="bodyGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0052FF" />
-      <stop offset="100%" stop-color="#00C6FF" />
+    <!-- Linear Gradients matching the image exactly -->
+    <!-- Purple to blue gradient for the main raised arm body -->
+    <linearGradient id="raisedArmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4C2A85" />
+      <stop offset="40%" stop-color="#3B4F9F" />
+      <stop offset="100%" stop-color="#0088CC" />
     </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#70E000" />
-      <stop offset="100%" stop-color="#AACC00" />
+    
+    <!-- Blue to teal gradient for the cross swoosh -->
+    <linearGradient id="crossSwooshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066CC" />
+      <stop offset="60%" stop-color="#0099DD" />
+      <stop offset="100%" stop-color="#00C4D4" />
     </linearGradient>
-    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#9EF01A" />
-      <stop offset="100%" stop-color="#38B000" />
+
+    <!-- Blue to green gradient for the third leg -->
+    <linearGradient id="legGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007ACC" />
+      <stop offset="50%" stop-color="#00B0CC" />
+      <stop offset="100%" stop-color="#7CD924" />
+    </linearGradient>
+    
+    <!-- Green to yellow gradient for the orbit ring and star -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7CD924" />
+      <stop offset="100%" stop-color="#B2E014" />
+    </linearGradient>
+    
+    <!-- Green to blue gradient for the graduation cap -->
+    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7CD924" />
+      <stop offset="60%" stop-color="#00B0CC" />
+      <stop offset="100%" stop-color="#0052FF" />
     </linearGradient>
   </defs>
 
-  <!-- Logo Graphics Group -->
+  <!-- Logo Graphic Icon Group -->
   <g transform="translate(10, 10)">
-    <!-- Elliptical halo orbit around the star and raised hand -->
-    <ellipse cx="120" cy="40" rx="38" ry="9" fill="none" stroke="url(#accentGrad)" stroke-width="3" transform="rotate(-15, 120, 40)" />
+    <!-- The Orbit ring around the raised hand -->
+    <ellipse cx="102" cy="48" rx="46" ry="11" fill="none" stroke="url(#ringGrad)" stroke-width="4.5" transform="rotate(-12, 102, 48)" />
 
-    <!-- Stylized 4-point Sparkle Star -->
-    <path d="M 120,20 L 123.5,28.5 L 132,30 L 123.5,31.5 L 120,40 L 116.5,31.5 L 108,30 L 116.5,28.5 Z" fill="url(#starGrad)" />
+    <!-- 4-point Sparkle Star -->
+    <path d="M 102,18 L 106,29 L 117,33 L 106,37 L 102,48 L 98,37 L 87,33 L 98,29 Z" fill="url(#ringGrad)" />
 
-    <!-- Stylized human figure - Raised hand and body curves -->
-    <!-- Curved vertical back swoosh (purple highlight) -->
-    <path d="M 103,115 C 103,100 112,65 119,45 C 121,40 120,38 120,38 C 120,38 123,42 121,48 C 117,68 111,98 103,115 Z" fill="#7209B7" />
-    
-    <!-- Curved active cross swoosh (vibrant blue-teal gradient) -->
-    <path d="M 102,112 C 110,95 125,75 160,70 C 145,76 130,90 127,100 C 124,110 135,118 165,115 C 145,118 135,120 126,110 C 118,100 110,110 102,112 Z" fill="url(#bodyGrad)" />
+    <!-- Left raised arm/body swoosh (purple to blue) -->
+    <path d="M 125,178 C 115,160 112,120 120,80 C 124,62 129,48 128,48 C 128,48 133,52 131,60 C 125,85 125,130 135,160 C 137,166 135,170 125,178 Z" fill="url(#raisedArmGrad)" />
 
-    <!-- Head of the figure -->
-    <circle cx="138" cy="54" r="12" fill="#0052FF" />
+    <!-- Cross body swoosh (blue to teal) -->
+    <path d="M 120,180 C 132,150 152,105 215,92 C 190,102 165,125 158,142 L 120,180 Z" fill="url(#crossSwooshGrad)" />
 
-    <!-- Graduation Cap (Mortarboard) -->
-    <polygon points="122,46 138,38 154,46 138,54" fill="url(#accentGrad)" />
-    <!-- Graduation Cap Cap base -->
-    <rect x="134" y="49" width="8" height="5" fill="url(#accentGrad)" rx="1" />
-    <!-- Tassel -->
-    <path d="M 148,46 L 153,52 L 156,52" stroke="url(#accentGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <!-- Third leg/arm (blue to green) -->
+    <path d="M 152,135 C 160,140 180,150 220,165 C 190,165 170,160 152,135 Z" fill="url(#legGrad)" />
+
+    <!-- Head -->
+    <circle cx="152" cy="74" r="14" fill="#007ACC" />
+
+    <!-- Graduation Cap -->
+    <polygon points="128,62 152,50 176,62 152,74" fill="url(#capGrad)" />
+    <rect x="146" y="67" width="12" height="7" fill="url(#capGrad)" rx="1.5" />
+    <path d="M 168,62 L 174,72 L 178,72" stroke="url(#capGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" />
   </g>
 
-  <!-- High-fidelity custom text layout -->
-  <text x="150" y="200" font-family="'Inter', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="25" fill="#0F172A" text-anchor="middle" letter-spacing="1.5">
-    DHANVA TEACH
-  </text>
+  <!-- Futuristic Blocky Text: "DHANVA TEACH" (drawn exactly using paths) -->
+  <g fill="#2A3E56" transform="translate(8, 205)">
+    <!-- D -->
+    <path d="M 20,0 L 35,0 C 41,0 45,4 45,9 L 45,17 C 45,22 41,26 35,26 L 20,26 Z M 26,5 L 26,21 L 34,21 C 36,21 39,20 39,17 L 39,9 C 39,6 36,5 34,5 Z" />
+    <!-- H -->
+    <path d="M 52,0 L 58,0 L 58,11 L 68,11 L 68,0 L 74,0 L 74,26 L 68,26 L 68,16 L 58,16 L 58,26 L 52,26 Z" />
+    <!-- A -->
+    <path d="M 80,26 L 90,0 L 97,0 L 107,26 L 100,26 L 98,20 L 89,20 L 87,26 Z M 91,15 L 96,15 L 93.5,6 Z" />
+    <!-- N -->
+    <path d="M 113,0 L 119,0 L 129,18 L 129,0 L 135,0 L 135,26 L 129,26 L 119,8 L 119,26 L 113,26 Z" />
+    <!-- V -->
+    <path d="M 141,0 L 147,0 L 152,18 L 157,0 L 163,0 L 155,26 L 149,26 Z" />
+    <!-- A -->
+    <path d="M 169,26 L 179,0 L 186,0 L 196,26 L 189,26 L 187,20 L 178,20 L 176,26 Z M 180,15 L 185,15 L 182.5,6 Z" />
+    
+    <!-- T -->
+    <path d="M 207,0 L 225,0 L 225,5 L 219,5 L 219,26 L 213,26 L 213,5 L 207,5 Z" />
+    <!-- E -->
+    <path d="M 231,0 L 246,0 L 246,5 L 237,5 L 237,10 L 244,10 L 244,15 L 237,15 L 237,21 L 246,21 L 246,26 L 231,26 Z" />
+    <!-- A -->
+    <path d="M 252,26 L 262,0 L 269,0 L 279,26 L 272,26 L 270,20 L 261,20 L 259,26 Z M 263,15 L 268,15 L 265.5,6 Z" />
+    <!-- C -->
+    <path d="M 296,0 L 287,0 C 283,0 281,4 281,9 L 281,17 C 281,22 283,26 287,26 L 296,26 L 296,21 L 288,21 C 287,21 287,20 287,17 L 287,9 C 287,6 287,5 288,5 L 296,5 Z" />
+    <!-- H -->
+    <path d="M 302,0 L 308,0 L 308,11 L 318,11 L 318,0 L 324,0 L 324,26 L 318,26 L 318,16 L 308,16 L 308,26 L 302,26 Z" />
+  </g>
 </svg>
