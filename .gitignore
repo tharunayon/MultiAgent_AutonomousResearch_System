@@ -8,6 +8,7 @@ __pycache__/
 
 # Local medical PDF databases
 *.pdf
+!knowledge_base/**/*.pdf
 
 # OS junk
 .DS_Store

@@ -1,0 +1,248 @@
+
+
+<!doctype html>
+<html lang="EN" >
+<head>
+
+    <title>404 error: page not found</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="robots" content="index,follow">
+    <meta name="description" content="University Hospitals Birmingham NHS Foundation Trust runs Good Hope, Heartlands and Solihull hospitals, and Queen Elizabeth Hospital Birmingham.">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes">
+
+    <link rel="StyleSheet" type="text/css" href="/css/site.css">
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-X77ZVH3GTK"></script>
+    <link rel="StyleSheet" type="text/css" href="/css/app.css">
+    <link rel="preconnect" crossorigin="anonymous" href="https://assets.nhs.uk/">
+    <link rel="StyleSheet" type="text/css" href="/css/extras.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/scripts/sitekit-build.js"></script>
+    <script src="/scripts/main.js"></script>
+
+    <meta name="google-site-verification" content="7JKqIH0JcEXxWySr4tvMvRmK_eJAR3E3lHTxfsfHbZ0" />
+
+
+    <!--  Script is inserted in all pages   -->
+    <script>
+        var _mtm = window._mtm = window._mtm || [];
+        var _paq = window._paq = window._paq || [];
+        _mtm.push({
+            'mtm.startTime': (new Date().getTime()),
+            'event': 'mtm.Start'
+        });
+        var d = document,
+            g = d.createElement('script'),
+            s = d.getElementsByTagName('script')[0];
+        g.async = true;
+        g.src = 'https://www.uhb-stats.co.uk/js/container_WBZAmpuR.js';
+        s.parentNode.insertBefore(g, s);
+        _paq.push(['requireCookieConsent']);
+
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-5J3R4Z5P');
+
+    </script>
+
+
+    <script type="text/javascript" crossorigin="anonymous" integrity="sha256-VCrJcQdV3IbbIVjmUyF7DnCqBbWD1BcZ/1sda2KWeFc= sha384-k2OQFn+wNFrKjU9HiaHAcHlEvLbfsVfvOnpmKBGWVBrpmGaIleDNHnnCJO4z2Y2H sha512-gxDfysgvGhVPSHDTieJ/8AlcIEjFbF3MdUgZZL2M5GXXDdIXCcX0CpH7Dh6jsHLOLOjRzTFdXASWZtxO+eMgyQ==" src="https://www.browsealoud.com/plus/scripts/3.1.0/ba.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/favicons/favicon-uhb.ico">
+
+    
+
+ <link rel="shortcut icon" type="image/x-icon" href="favicon-uhb.ico">
+
+    
+
+    <!-- Inserted HOME page only   -->
+    <style>
+
+      div#CQCWidget-RRK-1 {
+        border: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      div#CQCWidget-RRK-1 div.cqc-container {
+        background: none !important;
+        padding: 0 !important;
+      }
+
+      div#CQCWidget-RRK-1 .cqc-widget-inner .cqc-widget-normal,
+      div.cqc-widget .cqc-widget-inner .cqc-widget-inherited {
+        background: none !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      div#CQCWidget-RRK-1 .cqc-widget-clear {
+        display: none;
+      }
+
+    </style>
+
+
+
+    <div class="uhb-c-bg-image"></div>
+<script type="text/javascript">!function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{
+src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
+crossOrigin: "anonymous", 
+cfg: { // Application Insights Configuration
+    connectionString: 'InstrumentationKey=1e058e7d-1fb1-4fae-a35d-1fab0d002514'
+}});</script></head>
+
+
+<body class="">
+
+    <a class="uhb-c-link uhb-c-link--skip" href="#main-content">Skip to main content</a>
+
+    <!-- Start Err -->
+
+
+<header class="uhb-c-header">
+    <div class="uhb-c-header__container uhb-o-container">
+        <div class="uhb-c-header__content">
+            <a href="/" class="uhb-c-header__logo">
+                <svg class="uhb-c-header__logo-nhs" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" viewBox="0 0 40 16">
+                    <path class="uhb-c-header__logo-nhs-background" d="M38.5 1.9l-.84 2.55a6.51 6.51 0 00-2.87-.58c-1.4 0-2.5.21-2.5 1.22 0 1.82 5.05 1.15 5.05 5.07 0 3.55-3.33 4.48-6.36 4.48-1.34 0-2.9-.32-4.03-.67l.84-2.61c.7.45 2.06.75 3.22.75 1.07 0 2.79-.22 2.79-1.55 0-2.08-5.05-1.28-5.05-4.93 0-3.34 2.95-4.32 5.8-4.32 1.56.02 3.06.18 3.95.58zm-10.02-.35l-2.7 12.88h-3.5l1.16-5.52H19.3l-1.15 5.52h-3.5l2.72-12.88h3.49l-1.02 4.93h4.13L25 1.55h3.5zm-12.4 0l-2.76 12.88H8.99L6.26 5.52h-.03l-1.83 8.9H1.13L3.92 1.56h4.35l2.66 8.93h.02l1.83-8.93h3.3zM40 0H0v16h40V0z" fill="#005EB8"></path>
+                    <path class="uhb-c-header__logo-nhs-text" d="M38.5 1.9l-.84 2.55a6.51 6.51 0 00-2.87-.58c-1.4 0-2.5.21-2.5 1.22 0 1.82 5.05 1.15 5.05 5.07 0 3.55-3.33 4.48-6.36 4.48-1.34 0-2.9-.32-4.03-.67l.84-2.61c.7.45 2.06.75 3.22.75 1.07 0 2.79-.22 2.79-1.55 0-2.08-5.05-1.28-5.05-4.93 0-3.34 2.95-4.32 5.8-4.32 1.56.02 3.06.18 3.95.58zm-10.02-.35l-2.7 12.88h-3.5l1.16-5.52H19.3l-1.15 5.52h-3.5l2.72-12.88h3.49l-1.02 4.93h4.13L25 1.55h3.5zm-12.4 0l-2.76 12.88H8.99L6.26 5.52h-.03l-1.83 8.9H1.13L3.92 1.56h4.35l2.66 8.93h.02l1.83-8.93h3.3z" fill="#fff"></path>
+                </svg>
+                <span class="uhb-c-header__logo-organisation-name">University Hospitals<span class="uhb-c-header__logo-organisation-name-split">Birmingham</span></span>
+                <span class="uhb-c-header__logo-organisation-descriptor">NHS Foundation Trust</span>
+            </a>
+        </div>
+
+        <div class="uhb-c-header__masthead">
+            <h1>404 error: page not found</h1>
+        </div>
+    </div>
+</header>
+
+<div class="uhb-o-page uhb-o-overlap">
+    <main class="uhb-o-container" id="main-content">
+        <div class="uhb-o-grid">
+            <div class="uhb-o-grid__item">
+
+
+<p>Sorry – we can't find that page. Why not start with one of these:</p>
+<ul>
+<li><a href="/">UHB home page</a></li>
+<li><a href="/education/">Education</a></li>
+<li><a href="/uhb-jobs/">Jobs</a></li>
+<li><a href="https://www.research.uhb.nhs.uk/">Research</a></li>
+</ul>
+                <div class="sitekit-build link-block uhb-c-related-links uhb-c-related-links--box">
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+
+
+<footer class="uhb-c-footer ">
+  <div class="uhb-c-footer__container uhb-o-container">
+    <div class="uhb-o-grid">
+      <div class="uhb-c-footer__left uhb-o-grid__item uhb-u-width-6/12@lg">
+
+        <svg class="uhb-c-footer__vision" xmlns="http://www.w3.org/2000/svg" viewBox="0 -13.3 400 92" aria-hidden="true" focusable="false">
+          <path fill="#6C3" d="M55.7 50c2.8 16-5 28.4-17.2 27.6-12.3-.8-24.5-14.4-27.3-30.4-2.8-16 5-28.3 17.2-27.5C40.7 20.5 53 34 55.7 50zM31 22.6c-11.2-.8-18.2 10.4-15.7 25C17.7 62 28.8 74.3 40 75c11.2.8 17.5-10.7 15-25.2S42 23.2 31 22.5z" />
+          <path fill="#639" d="M66.2 49.4C63 72.9 45.5 84.4 27.4 75 9.2 65.7-2.8 39.1.6 15.6 3.9-7.9 21.3-19.4 39.4-10 57.6-.7 69.6 26 66.2 49.4zM42.1-4.1C25.8-12.5 10-2 7 19c-3 21.2 7.8 45.2 24.1 53.6C47.6 80.9 63 70.3 66 49.1 68.9 28 58.4 4.3 42-4z" />
+          <path fill="#06C" d="M6.5 52.8c-.2-17 11.2-35 25.4-40.3 14.3-5.3 26 4.2 26.2 21.1.2 17-11.1 35-25.4 40.3-14.2 5.2-26-4.2-26.2-21.1zm29.3 23.5c16-5.8 28.7-26 28.4-45C64 12.5 51 2 35 7.9c-15.9 5.9-29.5 28-29.3 47C6 73.5 20 82.2 35.8 76.2z" />
+          <path fill="#639" d="M83.7 29.7h7.4c2.8 0 6.9.7 6.9 5.4 0 2.5-1.7 4.2-4.3 4.7 3 .3 4.9 2.3 4.9 4.9 0 5.3-4.8 6.1-7.5 6.1h-7.4V29.7zm4.3 8.5h1.7c1.8 0 4-.4 4-2.6 0-2.4-2.1-2.6-4-2.6H88v5.2zm0 9.3h2c2 0 4.4-.5 4.4-3 0-2.7-2.3-3.1-4.4-3.1h-2v6zM116 50.8h-4v-2a6.5 6.5 0 01-5.1 2.4c-3.7 0-5.3-2.6-5.3-6.1v-9.9h4v8.3c0 2 0 4.5 2.7 4.5 3 0 3.6-3.1 3.6-5.2v-7.6h4v15.6zM119.9 28.5h4v3.9h-4v-4zm0 6.7h4v15.6h-4V35.2zM128 28h4v22.8h-4V28.1zM146.4 49a5.7 5.7 0 01-4.8 2.2c-4.8 0-6.5-4-6.5-8.2 0-4.3 1.7-8.2 6.5-8.2 1.8 0 3.6.8 4.7 2.2v-9h4v22.8h-3.9v-1.7zm-3.7-1c2.7 0 3.6-2.8 3.6-5s-1-5-3.6-5-3.4 2.9-3.4 5c0 2 .8 5 3.4 5zM154.4 28.5h4v3.9h-4v-4zm0 6.7h4v15.6h-4V35.2zM162.4 35.2h3.8v2.2h.1c1.2-1.7 3-2.6 5.1-2.5 3.7 0 5.3 2.6 5.3 6v10h-4v-8.4c0-1.9 0-4.5-2.7-4.5-3 0-3.5 3.2-3.5 5.2v7.6h-4.1V35.2zM195 35.2v14.1c0 4.2-1.8 8.2-8.3 8.2-1.9 0-3.7-.3-5.4-1l.3-3.5c1.4.8 3 1.3 4.6 1.4 4.5 0 4.7-3.4 4.7-6h-.1c-1 1.6-3 2.5-4.9 2.4-4.6 0-6.3-3.7-6.3-7.9 0-3.7 2-8 6.6-8 2 0 3.6.6 4.8 2.4v-2h4zm-4.1 7.6c0-2.6-1-4.8-3.4-4.8-2.8 0-3.6 2.5-3.6 5 0 2 1 4.7 3.4 4.7 2.5 0 3.6-2.2 3.6-4.9z" />
+          <path fill="#06C" d="M207 28h4v9.4c1.2-1.7 3-2.6 5-2.5 3.7 0 5.3 2.6 5.3 6v10h-4.1v-8.4c0-1.9 0-4.5-2.6-4.5-3 0-3.6 3.2-3.6 5.2v7.6h-4V28.1zM237.7 50c-1.7.8-3.5 1.3-5.4 1.2-5.1 0-8.1-3-8.1-8 0-4.6 2.4-8.4 7.2-8.4 5.8 0 7.4 4 7.4 9.5H228c.2 2.5 2 4 4.5 4 1.8-.1 3.6-.7 5.2-1.7V50zm-2.7-8.5c-.2-2-1-3.7-3.4-3.7-2.2 0-3.4 1.6-3.6 3.7h7zM242.4 36a14 14 0 015.4-1.2c4.8 0 6.7 2 6.7 6.6v2l.1 4 .2 3.4h-3.6l-.1-2.3h-.1a5.6 5.6 0 01-4.8 2.7c-2.8 0-5.5-1.7-5.5-4.7-.1-1.9 1-3.6 2.7-4.4 1.6-.7 3.4-1 5.2-1h2.3c0-2.5-1.2-3.3-3.6-3.3-1.7 0-3.4.6-4.8 1.7l-.1-3.5zm4.8 12.2c1 0 2.1-.5 2.8-1.4.6-1 1-2 .9-3.2H249c-1.8 0-4.5.3-4.5 2.7 0 1.3 1.1 1.9 2.6 1.9zM258.4 28h4v22.8h-4V28.1zM267.7 38.2h-3v-3h3v-3.1l4-1.3v4.4h3.7v3h-3.6v7.3c0 1.3.4 2.5 1.9 2.5a4 4 0 001.9-.4v3.2c-1 .3-2 .4-3 .4-3.1 0-4.9-2-4.9-5v-8zM277.9 28h4v9.4h.1c1.1-1.7 3-2.6 4.9-2.5 3.7 0 5.3 2.6 5.3 6v10h-4v-8.4c0-1.9 0-4.5-2.7-4.5-3 0-3.6 3.2-3.6 5.2v7.6h-4V28.1zM296.1 28.5h4.1v3.9h-4v-4zm0 6.7h4.1v15.6h-4V35.2zM316.7 50c-1.6.8-3.5 1.3-5.4 1.2-5.1 0-8.1-3-8.1-8 0-4.6 2.4-8.4 7.2-8.4 5.8 0 7.5 4 7.5 9.5H307c.2 2.5 2 4 4.4 4 1.9-.1 3.7-.7 5.2-1.7V50zm-2.7-8.5c-.1-2-1-3.7-3.3-3.7s-3.4 1.6-3.6 3.7h6.9zM320.9 35.2h3.6v3.6c.2-1.5 1.9-4 4.3-4 .4 0 .8 0 1.3.2v4c-.6-.2-1.2-.3-1.9-.3-3.3 0-3.3 4.1-3.3 6.4v5.7h-4V35.2z" />
+          <path fill="#639" d="M340.4 28h4v22.8h-4V28.1zM348.6 28.5h4v3.9h-4v-4zm0 6.7h4v15.6h-4V35.2zM354.9 35.2h4.3l3.9 11.4 3.8-11.4h4.1l-5.7 15.6h-4.7L355 35.2zM385.6 50c-1.6.8-3.4 1.3-5.3 1.2-5.2 0-8.1-3-8.1-8 0-4.6 2.3-8.4 7.2-8.4 5.8 0 7.4 4 7.4 9.5H376c.2 2.5 2 4 4.5 4 1.8-.1 3.6-.7 5.1-1.7V50zm-2.7-8.5c0-2-1-3.7-3.3-3.7-2.2 0-3.4 1.6-3.6 3.7h7zM399 38.5a9.8 9.8 0 00-3.7-.7c-1 0-2.4.4-2.4 1.7 0 2.5 7.1 1 7.1 6.6 0 3.6-3.2 5-6.5 5a17 17 0 01-4.7-.6l.3-3.3c1.2.6 2.6 1 4 1 1 0 2.6-.4 2.6-1.9 0-3-7-1-7-6.6 0-3.4 3-4.8 6.1-4.8 1.5 0 3 .2 4.5.5l-.3 3z" />
+        </svg>
+
+            <ul class="uhb-c-footer__social">
+                <li class="uhb-c-footer__social-item">
+                    <a class="uhb-c-button uhb-c-button--action uhb-c-button--facebook" href="https://www.facebook.com/uhbtrust/" target="_blank">
+                        <svg class="uhb-c-icon uhb-c-icon--facebook" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M13.3 13h2.6l.3-3.2h-2.9V7c0-.3.3-.6.7-.7h2.3V3.6l-2.6-.1c-.7 0-1.4.1-1.9.5-.8.5-1.4 1-1.7 1.8l-.2 1v2.9H7.3v3.1h2.6v7.9h3.4V13z" />
+                        </svg>
+                        <span class="uhb-u-visually-hidden">Facebook</span>
+                    </a>
+                </li>
+                <li class="uhb-c-footer__social-item">
+                    <a class="uhb-c-button uhb-c-button--action uhb-c-button--instagram" href="https://www.instagram.com/uhbtrust/" target="_blank">
+                        <svg class="uhb-c-icon uhb-c-icon--instagram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3.8c2.67 0 2.99.01 4.04.06 2.71.12 3.98 1.41 4.1 4.1.05 1.05.06 1.37.06 4.04s-.01 2.99-.06 4.04c-.12 2.69-1.39 3.98-4.1 4.1a69.1 69.1 0 0 1-4.04.06c-2.67 0-2.99-.01-4.04-.06-2.72-.12-3.98-1.41-4.1-4.1A69.15 69.15 0 0 1 3.8 12a70 70 0 0 1 .06-4.04c.12-2.69 1.39-3.98 4.1-4.1C9 3.81 9.33 3.8 12 3.8ZM12 2c-2.72 0-3.06.01-4.12.06-3.63.17-5.65 2.18-5.82 5.82C2.01 8.94 2 9.28 2 12s.01 3.06.06 4.12c.17 3.63 2.18 5.65 5.82 5.82 1.06.05 1.4.06 4.12.06s3.06-.01 4.12-.06c3.63-.17 5.65-2.18 5.82-5.82.05-1.06.06-1.4.06-4.12s-.01-3.06-.06-4.12c-.16-3.63-2.18-5.65-5.82-5.82C15.06 2.01 14.72 2 12 2Zm0 4.87a5.14 5.14 0 1 0 0 10.27 5.14 5.14 0 0 0 0-10.28Zm0 8.46a3.33 3.33 0 1 1 0-6.66 3.33 3.33 0 0 1 0 6.66Zm5.34-9.87a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z" />
+                        </svg>
+                        <span class="uhb-u-visually-hidden">Instagram</span>
+                    </a>
+                </li>
+                <li class="uhb-c-footer__social-item">
+                    <a class="uhb-c-button uhb-c-button--action uhb-c-button--linkedin" href="https://www.linkedin.com/company/uhb/" target="_blank">
+                        <svg class="uhb-c-icon uhb-c-icon--linkedin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M17.83 2H6.17A4.17 4.17 0 0 0 2 6.17v11.66C2 20.13 3.87 22 6.17 22h11.66c2.3 0 4.17-1.87 4.17-4.17V6.17C22 3.87 20.14 2 17.83 2ZM8.67 17.83h-2.5V8.67h2.5v9.16ZM7.42 7.61c-.8 0-1.46-.66-1.46-1.47 0-.81.65-1.47 1.46-1.47.8 0 1.46.66 1.46 1.47 0 .81-.66 1.47-1.46 1.47Zm11.25 10.22h-2.5v-4.67c0-2.8-3.34-2.6-3.34 0v4.67h-2.5V8.67h2.5v1.47a3.17 3.17 0 0 1 5.84 2.06v5.63Z" />
+                        </svg>
+                        <span class="uhb-u-visually-hidden">Linkedin</span>
+                    </a>
+                </li>
+                    <li class="uhb-c-footer__social-item">
+                        <a class="uhb-c-button uhb-c-button--action uhb-c-button--tiktok" href="https://www.tiktok.com/@uhbnhs" target="_blank">
+                            <svg class="uhb-c-icon  uhb-c-icon--twiter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M17.35,6.61c-0.97-0.63-1.67-1.64-1.89-2.82C15.42,3.53,15.39,3.27,15.39,3H12.3l0,12.4 c-0.05,1.39-1.2,2.5-2.6,2.5c-0.44,0-0.85-0.11-1.21-0.3c-0.83-0.44-1.39-1.3-1.39-2.3c0-1.43,1.17-2.6,2.6-2.6 0.27,0,0.52,0.04,0.77,0.12V10.4V9.66C10.21,9.63,9.96,9.61,9.7,9.61c-.14,0-5.7,2.56-5.7,5.7c0,1.93,0.96,3.63,2.43,4.66
+C7.36,20.62,8.48,21,9.7,21c3.14,0,5.7-2.56,5.7-5.7V9.02c1.21,0.87,2.7,1.38,4.31,1.38V7.99V7.31 C18.83,7.31,18.03,7.05,17.35,6.61z" />
+                            </svg>
+                            <span class="uhb-u-visually-hidden">TikTok</span>
+                        </a>
+                    </li>
+                <li class="uhb-c-footer__social-item">
+                    <a class="uhb-c-button uhb-c-button--action uhb-c-button--twitter" href="https://twitter.com/uhbtrust" target="_blank">
+                        <svg class="uhb-c-icon  uhb-c-icon--twiter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M20.7 7c-.6.2-1.3.5-2 .5.7-.5 1.3-1.1 1.6-1.9a7 7 0 0 1-2.3.8C16.8 5 14.7 4.9 13.1 6c-.8.7-1.3 1.7-1.2 2.7v.7a9.3 9.3 0 0 1-7.1-3.5c-.3.5-.4 1.2-.4 1.8A3 3 0 0 0 6 10.5c-.6 0-1.1-.1-1.5-.5 0 1.7 1.1 3.1 2.7 3.4l-.9.1h-.6A3.2 3.2 0 0 0 8.9 16a8 8 0 0 1-4.3 1.5h-.8a9.8 9.8 0 0 0 15.1-8.3v-.6c.6-.4 1.4-1 1.8-1.6z" />
+                        </svg>
+                        <span class="uhb-u-visually-hidden">Twitter</span>
+                    </a>
+                </li>
+                <li class="uhb-c-footer__social-item">
+                    <a class="uhb-c-button uhb-c-button--action uhb-c-button--youtube" href="https://www.youtube.com/user/uhbvideos" target="_blank">
+                        <svg class="uhb-c-icon uhb-c-icon--youtube" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M18.35 4.15c-3-.2-9.7-.2-12.7 0C2.41 4.38 2.02 6.34 2 11.5c.02 5.15.4 7.12 3.65 7.35 3 .2 9.7.2 12.7 0 3.24-.22 3.63-2.19 3.65-7.35-.02-5.15-.4-7.12-3.65-7.35ZM9.5 14.83V8.17l6.67 3.32-6.67 3.34Z" />
+                        </svg>
+                        <span class="uhb-u-visually-hidden">YouTube</span>
+                    </a>
+                </li>
+            </ul>
+
+      </div>
+
+
+      <!--  TODO code Url's dydnamically -->
+      <div class="uhb-c-footer__right uhb-o-grid__item uhb-u-width-6/12@lg">
+        <ul class="uhb-c-footer__nav">
+
+                                <li class="uhb-c-footer__nav-item ">
+                                    <a class="uhb-c-footer__nav-link" href="/legal-and-regulatory/privacy/">Privacy</a>
+                                </li>
+                                <li class="uhb-c-footer__nav-item ">
+                                    <a class="uhb-c-footer__nav-link" href="/legal-and-regulatory/terms-and-conditions/">Terms</a>
+                                </li>
+                    <li class="uhb-c-footer__nav-item ">
+                                <a class="uhb-c-footer__nav-link" href="/legal-and-regulatory/">Legal and regulatory</a>
+                    </li>
+        </ul>
+        <p class="uhb-u-font-size-body-small uhb-u-margin-bottom-0">&copy; 2026 University Hospitals Birmingham NHS Foundation Trust</p>
+      </div>
+
+
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+</body>
+</html>
