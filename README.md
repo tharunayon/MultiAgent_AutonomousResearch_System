@@ -4,6 +4,43 @@ A production-ready Healthcare Retrieval-Augmented Generation (RAG) portal built 
 
 The system implements Role-Based Access Control (RBAC) to dynamically restrict clinical citations and technical medical analysis based on whether the logged-in user is a patient or an authorized medical practitioner (doctor).
 
+```mermaid
+flowchart TD
+  n0["User Selects Role (Patient/Doctor)"]
+  n1[Streamlit Web Portal]
+  n2{RBAC Handler}
+  n3[Public Patient Guides]
+  n4[Restricted Clinical Cardiology Notes]
+  n5["faiss_index_patient (Public)"]
+  n6["faiss_index_doctor (Clinical+Public)"]
+  n7[Orchestration Agent]
+  n8[Clinical Research Agent]
+  n9[Patient Summary Agent]
+  n10[Fact-Checking Agent]
+  n11["Groq Cloud API (Llama 3)"]
+
+  n0 --> n1
+  n1 --> n2
+  n1 --> n7
+  n2 -- Patient --> n3
+  n3 --> n5
+  n2 -- Doctor --> n3
+  n2 -- Doctor --> n4
+  n3 --> n6
+  n4 --> n6
+  n6 --> n8
+  n5 --> n9
+  n7 -- Doctor path --> n8
+  n7 -- Patient path --> n9
+  n8 --> n10
+  n9 --> n10
+  n10 -- verified + audit --> n1
+  n7 --> n11
+  n8 --> n11
+  n9 --> n11
+  n10 --> n11
+```
+
 ---
 
 ## ⚙️ Core Architecture
