@@ -231,11 +231,11 @@ def render_guide_chatbot(groq_key):
                     
             if matched_key:
                 response = GUIDE_RESPONSES[matched_key]
-            elif groq_key:
-                # Use Groq to answer based on website context
+            else:
+                # Use Groq or mock fallback to answer based on website context
                 try:
                     from agents.health_agents import HealthcareAgentSystem
-                    agents = HealthcareAgentSystem(groq_key)
+                    agents = HealthcareAgentSystem(groq_key if groq_key else "mock_key")
                     system_prompt = """
                     You are a helpful, brief Portal Guide Assistant for a Multi-Agent Healthcare RAG Web Application.
                     Your job is to explain how this website works, how to use it, the roles (Doctor and Patient), the RAG pipeline, the mock files, and the agents.
@@ -243,9 +243,7 @@ def render_guide_chatbot(groq_key):
                     """
                     response = agents._call_llm_non_stream(system_prompt, guide_query)
                 except Exception as e:
-                    response = f"I'm sorry, I encountered an error checking Groq: {e}. You can switch roles in the sidebar or upload a PDF to begin."
-            else:
-                response = "I am a portal helper. Ask me about 'roles', 'agents', 'RAG', 'sample files', 'doctor view', or 'patient view' to get started!"
+                    response = f"I'm sorry, I encountered an error checking guide context: {e}. You can switch views or upload a PDF to begin."
                 
             st.session_state.guide_history.append({"role": "assistant", "content": response})
             st.rerun()
@@ -765,69 +763,66 @@ else:
 
             # Chat Input
             if prompt := st.chat_input("Enter clinical query..."):
-                if not groq_key:
-                    st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
-                else:
-                    # 1. Render user message
-                    with st.chat_message("user"):
-                        st.write(prompt)
-                    st.session_state.messages_doctor.append({"role": "user", "content": prompt})
+                # 1. Render user message
+                with st.chat_message("user"):
+                    st.write(prompt)
+                st.session_state.messages_doctor.append({"role": "user", "content": prompt})
+                
+                # 2. Retrieve contexts from FAISS
+                contexts = search_rag(prompt, role=ROLE_DOCTOR, top_k=4)
+                
+                # 3. Create Agents client
+                agents = HealthcareAgentSystem(groq_key if groq_key else "mock_key")
+                
+                # 4. Run Routing Agent
+                with st.status("Coordinating clinical agents...", expanded=True) as status:
+                    status.write("Orchestration Routing Agent analyzing query...")
+                    route_data = agents.run_routing_agent(prompt, ROLE_DOCTOR)
+                    status.write(f"Routed Query. Orchestration Reasoning: {route_data['routing_reasoning']}")
                     
-                    # 2. Retrieve contexts from FAISS
-                    contexts = search_rag(prompt, role=ROLE_DOCTOR, top_k=4)
+                    # 5. Stream Clinical Research Agent
+                    status.write("Clinical Research Agent examining documents & compiling technical notes...")
+                    with st.chat_message("assistant"):
+                        assistant_response_placeholder = st.empty()
+                        clinical_response = ""
+                        for chunk in agents.run_clinical_research_agent_stream(prompt, contexts):
+                            clinical_response += chunk
+                            assistant_response_placeholder.markdown(clinical_response + "▌")
+                        assistant_response_placeholder.markdown(clinical_response)
                     
-                    # 3. Create Agents client
-                    agents = HealthcareAgentSystem(groq_key)
+                    # 6. Run Fact checker (non-streaming)
+                    status.write("Fact-Checking Agent auditing clinical notes for grounding accuracy...")
+                    fact_check_report = agents.run_fact_checking_agent(clinical_response, contexts)
                     
-                    # 4. Run Routing Agent
-                    with st.status("Coordinating clinical agents...", expanded=True) as status:
-                        status.write("Orchestration Routing Agent analyzing query...")
-                        route_data = agents.run_routing_agent(prompt, ROLE_DOCTOR)
-                        status.write(f"Routed Query. Orchestration Reasoning: {route_data['routing_reasoning']}")
-                        
-                        # 5. Stream Clinical Research Agent
-                        status.write("Clinical Research Agent examining documents & compiling technical notes...")
-                        with st.chat_message("assistant"):
-                            assistant_response_placeholder = st.empty()
-                            clinical_response = ""
-                            for chunk in agents.run_clinical_research_agent_stream(prompt, contexts):
-                                clinical_response += chunk
-                                assistant_response_placeholder.markdown(clinical_response + "▌")
-                            assistant_response_placeholder.markdown(clinical_response)
-                        
-                        # 6. Run Fact checker (non-streaming)
-                        status.write("Fact-Checking Agent auditing clinical notes for grounding accuracy...")
-                        fact_check_report = agents.run_fact_checking_agent(clinical_response, contexts)
-                        
-                        # Render outputs
-                        status.update(label="Analysis Completed", state="complete", expanded=False)
-                    
-                    # Render routing, fact check and citations in expanders for current message
-                    with st.expander("ROUTING EVALUATION", expanded=False):
-                        st.info(route_data["routing_reasoning"])
-                    with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
-                        st.warning(fact_check_report)
-                    if contexts:
-                        with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
-                            for i, citation in enumerate(contexts):
-                                st.markdown(
-                                    f"<div class='citation-card'>"
-                                    f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
-                                    f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
-                                    f"<div class='citation-text'>{citation['text']}</div>"
-                                    f"</div>",
-                                    unsafe_allow_html=True
-                                )
-                    
-                    # Save to doctor history
-                    st.session_state.messages_doctor.append({
-                        "role": "assistant",
-                        "content": clinical_response,
-                        "routing_reasoning": route_data["routing_reasoning"],
-                        "fact_check": fact_check_report,
-                        "citations": contexts
-                    })
-                    st.rerun()
+                    # Render outputs
+                    status.update(label="Analysis Completed", state="complete", expanded=False)
+                
+                # Render routing, fact check and citations in expanders for current message
+                with st.expander("ROUTING EVALUATION", expanded=False):
+                    st.info(route_data["routing_reasoning"])
+                with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
+                    st.warning(fact_check_report)
+                if contexts:
+                    with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
+                        for i, citation in enumerate(contexts):
+                            st.markdown(
+                                f"<div class='citation-card'>"
+                                f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
+                                f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
+                                f"<div class='citation-text'>{citation['text']}</div>"
+                                f"</div>",
+                                unsafe_allow_html=True
+                            )
+                
+                # Save to doctor history
+                st.session_state.messages_doctor.append({
+                    "role": "assistant",
+                    "content": clinical_response,
+                    "routing_reasoning": route_data["routing_reasoning"],
+                    "fact_check": fact_check_report,
+                    "citations": contexts
+                })
+                st.rerun()
 
         with tab_catalog:
             st.markdown("### Registered Vector Documents")
@@ -882,56 +877,53 @@ else:
 
             # Chat Input
             if prompt := st.chat_input("Enter your health question..."):
-                if not groq_key:
-                    st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
-                else:
-                    # 1. Render user message
-                    with st.chat_message("user"):
-                        st.write(prompt)
-                    st.session_state.messages_patient.append({"role": "user", "content": prompt})
+                # 1. Render user message
+                with st.chat_message("user"):
+                    st.write(prompt)
+                st.session_state.messages_patient.append({"role": "user", "content": prompt})
+                
+                # 2. Retrieve patient-accessible contexts
+                contexts = search_rag(prompt, role=ROLE_PATIENT, top_k=4)
+                
+                # 3. Create Agents client
+                agents = HealthcareAgentSystem(groq_key if groq_key else "mock_key")
+                
+                # 4. Run multi-agent pipeline
+                with st.status("Retrieving answers...", expanded=True) as status:
+                    status.write("Orchestration Agent evaluating patient request...")
+                    route_data = agents.run_routing_agent(prompt, ROLE_PATIENT)
                     
-                    # 2. Retrieve patient-accessible contexts
-                    contexts = search_rag(prompt, role=ROLE_PATIENT, top_k=4)
+                    status.write("Clinical Research Agent verifying medical references...")
+                    # Get research notes in background (non-stream)
+                    clinical_notes = agents._call_llm_non_stream(
+                        "You are a clinical researcher. Analyze the patient query and summarize facts based on context.",
+                        f"Query: {prompt}\n\nContexts:\n" + "\n".join([c["text"] for c in contexts])
+                    )
                     
-                    # 3. Create Agents client
-                    agents = HealthcareAgentSystem(groq_key)
-                    
-                    # 4. Run multi-agent pipeline
-                    with st.status("Retrieving answers...", expanded=True) as status:
-                        status.write("Orchestration Agent evaluating patient request...")
-                        route_data = agents.run_routing_agent(prompt, ROLE_PATIENT)
+                    status.write("Patient Layman Agent translating clinical facts into simple instructions...")
+                    with st.chat_message("assistant"):
+                        assistant_response_placeholder = st.empty()
+                        patient_response = ""
+                        for chunk in agents.run_patient_layman_agent_stream(prompt, clinical_notes, contexts):
+                            patient_response += chunk
+                            assistant_response_placeholder.markdown(patient_response + "▌")
+                        assistant_response_placeholder.markdown(patient_response)
                         
-                        status.write("Clinical Research Agent verifying medical references...")
-                        # Get research notes in background (non-stream)
-                        clinical_notes = agents._call_llm_non_stream(
-                            "You are a clinical researcher. Analyze the patient query and summarize facts based on context.",
-                            f"Query: {prompt}\n\nContexts:\n" + "\n".join([c["text"] for c in contexts])
-                        )
-                        
-                        status.write("Patient Layman Agent translating clinical facts into simple instructions...")
-                        with st.chat_message("assistant"):
-                            assistant_response_placeholder = st.empty()
-                            patient_response = ""
-                            for chunk in agents.run_patient_layman_agent_stream(prompt, clinical_notes, contexts):
-                                patient_response += chunk
-                                assistant_response_placeholder.markdown(patient_response + "▌")
-                            assistant_response_placeholder.markdown(patient_response)
-                            
-                        status.write("Fact-Checking Agent verifying layman guide alignment...")
-                        fact_report = agents.run_fact_checking_agent(patient_response, contexts)
-                        
-                        status.update(label="Response Formulated", state="complete", expanded=False)
+                    status.write("Fact-Checking Agent verifying layman guide alignment...")
+                    fact_report = agents.run_fact_checking_agent(patient_response, contexts)
                     
-                    # Display simplified badge for patient reassurance
-                    st.success("Verification Status: Grounded in Patient Records")
-                    
-                    # Save to patient history
-                    st.session_state.messages_patient.append({
-                        "role": "assistant",
-                        "content": patient_response,
-                        "grounding_verified": True
-                    })
-                    st.rerun()
+                    status.update(label="Response Formulated", state="complete", expanded=False)
+                
+                # Display simplified badge for patient reassurance
+                st.success("Verification Status: Grounded in Patient Records")
+                
+                # Save to patient history
+                st.session_state.messages_patient.append({
+                    "role": "assistant",
+                    "content": patient_response,
+                    "grounding_verified": True
+                })
+                st.rerun()
                     
         with tab_plibrary:
             st.markdown("### Ingested Document Directory (Public)")
