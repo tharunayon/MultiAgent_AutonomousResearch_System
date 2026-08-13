@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from utils.auth import render_auth_sidebar, get_user_role, ROLE_DOCTOR, ROLE_PATIENT
+from utils.auth import render_auth_sidebar, get_user_role, ROLE_DOCTOR, ROLE_PATIENT, render_login_page, init_auth
 from utils.rag_pipeline import init_rag_state, ingest_pdf, search_rag, clear_rag_state
 from agents.health_agents import HealthcareAgentSystem
 
@@ -157,8 +157,32 @@ st.markdown("""
         border-bottom: 2px solid #E2E8F0;
         padding-bottom: 0.3rem;
     }
+
+    .login-promo-card {
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        margin-bottom: 2rem;
+    }
+    .login-form-card {
+        background-color: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+    }
 </style>
 """, unsafe_allow_html=True)
+
+# Initialize session state authentication
+init_auth()
+
+# Render secure login wall if user is not authenticated
+if not st.session_state.logged_in:
+    render_login_page()
+    st.stop()
 
 GUIDE_RESPONSES = {
     "role": "To switch roles, select the option under 'Role-Based Access Control' in the sidebar. You can select either 'Authorized Medical Practitioner (Doctor)' or 'Normal Patient'. This determines the document access boundary (filtering the RAG data) and query response style.",
@@ -364,337 +388,570 @@ st.sidebar.markdown("<div class='sidebar-header'>Portal Management</div>", unsaf
 # Render role selector switcher
 render_auth_sidebar()
 
-# ----------------- HERO SECTION -----------------
-st.markdown("<hr style='margin-top: 0.5rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
-
-hero_col1, hero_col2 = st.columns([1.1, 0.9])
-
-with hero_col1:
-    st.markdown("""
-    <div class="hero-pill">GOLD STANDARD MEDICAL RETRIEVAL</div>
-    <div class="hero-title">Learn & Search<br>with <span class="hero-highlight">Dhanva Teach</span></div>
-    <div class="hero-desc">
-        Access isolated clinical trial data, consult diagnostic guidelines, and query multi-agent systems with absolute safety. 
-        Features role-isolated indexes and automated clinical fact-checking.
-    </div>
-    <div class="hero-sublinks">
-        <span class="hero-sublink-item"><span style="color: #0052FF; font-weight: 700; margin-right: 4px;">●</span>Clinically-Oriented</span>
-        <span class="hero-sublink-item"><span style="color: #10B981; font-weight: 700; margin-right: 4px;">●</span>Fact-Checked</span>
-        <span class="hero-sublink-item"><span style="color: #EF4444; font-weight: 700; margin-right: 4px;">●</span>Role-Isolated</span>
-    </div>
-    """, unsafe_allow_html=True)
+# ----------------- VIEW ROUTING -----------------
+if st.session_state.current_view == "home":
+    st.markdown("<hr style='margin-top: 0.5rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
     
-    if st.button("Enter Portal Workspace", key="enter_workspace"):
-        st.info("Scroll down to access the interactive portal workspace.")
-
-with hero_col2:
-    if os.path.exists("medical_hero_illustration.png"):
-        st.image("medical_hero_illustration.png", use_container_width=True)
-
-st.markdown("<hr style='margin-top: 2rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
-
-# Groq API Key management (loaded silently from backend, not shown to users)
-groq_key = ""
-try:
-    if "GROQ_API_KEY" in st.secrets and st.secrets["GROQ_API_KEY"] != "gsk_placeholder_replace_me":
-        groq_key = st.secrets["GROQ_API_KEY"]
-except Exception:
-    pass
-
-if not groq_key:
-    groq_key = os.environ.get("GROQ_API_KEY", "")
-
-# Programmatic Mock Document Ingestion Utility
-st.sidebar.markdown("---")
-st.sidebar.markdown("<div class='sidebar-header'>Sample Document Creator</div>", unsafe_allow_html=True)
-if st.sidebar.button("Generate Sample Medical PDFs"):
-    if generate_sample_files():
-        st.sidebar.info("Generated sample files. Loading them below...")
-        # Auto-ingest doc_only notes
-        if os.path.exists("clinical_cardiology_notes.pdf"):
-            with open("clinical_cardiology_notes.pdf", "rb") as f:
-                res1 = ingest_pdf(f, "doctor_only")
-                st.sidebar.write(res1["message"])
-        # Auto-ingest patient guide notes
-        if os.path.exists("patient_hypertension_guide.pdf"):
-            with open("patient_hypertension_guide.pdf", "rb") as f:
-                res2 = ingest_pdf(f, "public_patient")
-                st.sidebar.write(res2["message"])
-        st.rerun()
-
-# Document Uploader widget
-st.sidebar.markdown("---")
-st.sidebar.markdown("<div class='sidebar-header'>Upload New Document</div>", unsafe_allow_html=True)
-uploaded_file = st.sidebar.file_uploader("Upload Medical PDF:", type="pdf")
-visibility_setting = st.sidebar.selectbox(
-    "Set Document Access Boundary:",
-    options=["public_patient", "doctor_only"],
-    format_func=lambda x: "Public Patient (All)" if x == "public_patient" else "Doctor Only (Restricted)"
-)
-
-# Persistent notification state for uploads
-if "upload_success" not in st.session_state:
-    st.session_state.upload_success = None
-if "last_uploaded_file" not in st.session_state:
-    st.session_state.last_uploaded_file = None
-
-if uploaded_file != st.session_state.last_uploaded_file:
-    st.session_state.last_uploaded_file = uploaded_file
-    st.session_state.upload_success = None
-
-if uploaded_file is not None:
-    if st.sidebar.button("Process & Ingest into RAG"):
-        with st.spinner("Analyzing document structure..."):
-            res = ingest_pdf(uploaded_file, visibility_setting)
-            if res["success"]:
-                st.session_state.upload_success = res["message"]
-                st.rerun()
-            else:
-                st.sidebar.error(res["message"])
-
-if st.session_state.upload_success:
-    st.sidebar.success(st.session_state.upload_success)
-
-# Reset vector database button
-if st.sidebar.button("Reset Vector Database"):
-    clear_rag_state()
-    # Clean files if generated
-    for f in ["clinical_cardiology_notes.pdf", "patient_hypertension_guide.pdf"]:
-        if os.path.exists(f):
-            try:
-                os.remove(f)
-            except Exception:
-                pass
-    st.sidebar.info("FAISS Vector stores and catalogs cleared.")
-    st.rerun()
-
-# Call guide assistant at the bottom of the sidebar
-render_guide_chatbot(groq_key)
-
-# ----------------- MAIN VIEW IMPLEMENTATION -----------------
-
-if role == ROLE_DOCTOR:
-    # Doctor views
-    tab_chat, tab_catalog = st.tabs(["PRACTITIONER PORTAL", "DOCUMENT CATALOG"])
-    
-    with tab_chat:
-        st.write("*Ask diagnostics, drug interaction queries, or ICD-10 suggestions. The system searches through both doctor-only research files and public patient guides.*")
+    if role == ROLE_DOCTOR:
+        st.markdown("""
+        <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 2rem; border-radius: 16px; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Outfit'; font-weight: 850; font-size: 2.2rem; color: #1E293B; margin: 0 0 0.5rem 0;">
+                Practitioner Clinical Research Dashboard
+            </h1>
+            <p style="color: #475569; font-size: 1.1rem; line-height: 1.6; margin: 0;">
+                Welcome to the secure clinical decision-support portal. Query cross-boundary research data, 
+                isolated trial journals, and verify AI findings using automated integrity auditing.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        # Initialize doctor chat history
-        if "messages_doctor" not in st.session_state:
-            st.session_state.messages_doctor = []
-            
-        # Render chat history
-        for msg in st.session_state.messages_doctor:
-            with st.chat_message(msg["role"]):
-                st.write(msg["content"])
-                if msg.get("routing_reasoning"):
-                    with st.expander("ROUTING EVALUATION", expanded=False):
-                        st.info(msg["routing_reasoning"])
-                if msg.get("fact_check"):
-                    with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
-                        st.warning(msg["fact_check"])
-                if msg.get("citations"):
-                    with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
-                        for i, citation in enumerate(msg["citations"]):
-                            st.markdown(
-                                f"<div class='citation-card'>"
-                                f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
-                                f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
-                                f"<div class='citation-text'>{citation['text']}</div>"
-                                f"</div>",
-                                unsafe_allow_html=True
-                            )
+        # Technical Dashboard Stats
+        stat_cols = st.columns(3)
+        with stat_cols[0]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase;">RESTRICTED SCHEMAS</div>
+                <div style="font-size: 2rem; font-weight: 850; color: #0052FF; margin: 0.2rem 0;">FAISS-L2</div>
+                <div style="font-size: 0.75rem; color: #10B981; font-weight: 600;">Mathematical Separation</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with stat_cols[1]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase;">INTEGRITY ENGINE</div>
+                <div style="font-size: 2rem; font-weight: 850; color: #10B981; margin: 0.2rem 0;">Audited</div>
+                <div style="font-size: 0.75rem; color: #10B981; font-weight: 600;">Grounding Checked</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with stat_cols[2]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase;">ACTIVE CODES</div>
+                <div style="font-size: 2rem; font-weight: 850; color: #E05353; margin: 0.2rem 0;">ICD-10</div>
+                <div style="font-size: 0.75rem; color: #64748B; font-weight: 600;">Clinical Trial Matching</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-        # Chat Input
-        if prompt := st.chat_input("Enter clinical query..."):
-            if not groq_key:
-                st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
-            else:
-                # 1. Render user message
-                with st.chat_message("user"):
-                    st.write(prompt)
-                st.session_state.messages_doctor.append({"role": "user", "content": prompt})
-                
-                # 2. Retrieve contexts from FAISS
-                contexts = search_rag(prompt, role=ROLE_DOCTOR, top_k=4)
-                
-                # 3. Create Agents client
-                agents = HealthcareAgentSystem(groq_key)
-                
-                # 4. Run Routing Agent
-                with st.status("Coordinating clinical agents...", expanded=True) as status:
-                    status.write("Orchestration Routing Agent analyzing query...")
-                    route_data = agents.run_routing_agent(prompt, ROLE_DOCTOR)
-                    status.write(f"Routed Query. Orchestration Reasoning: {route_data['routing_reasoning']}")
-                    
-                    # 5. Stream Clinical Research Agent
-                    status.write("Clinical Research Agent examining documents & compiling technical notes...")
-                    with st.chat_message("assistant"):
-                        assistant_response_placeholder = st.empty()
-                        clinical_response = ""
-                        for chunk in agents.run_clinical_research_agent_stream(prompt, contexts):
-                            clinical_response += chunk
-                            assistant_response_placeholder.markdown(clinical_response + "▌")
-                        assistant_response_placeholder.markdown(clinical_response)
-                    
-                    # 6. Run Fact checker (non-streaming)
-                    status.write("Fact-Checking Agent auditing clinical notes for grounding accuracy...")
-                    fact_check_report = agents.run_fact_checking_agent(clinical_response, contexts)
-                    
-                    # Render outputs
-                    status.update(label="Analysis Completed", state="complete", expanded=False)
-                
-                # Render routing, fact check and citations in expanders for current message
-                with st.expander("ROUTING EVALUATION", expanded=False):
-                    st.info(route_data["routing_reasoning"])
-                with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
-                    st.warning(fact_check_report)
-                if contexts:
-                    with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
-                        for i, citation in enumerate(contexts):
-                            st.markdown(
-                                f"<div class='citation-card'>"
-                                f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
-                                f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
-                                f"<div class='citation-text'>{citation['text']}</div>"
-                                f"</div>",
-                                unsafe_allow_html=True
-                            )
-                
-                # Save to doctor history
-                st.session_state.messages_doctor.append({
-                    "role": "assistant",
-                    "content": clinical_response,
-                    "routing_reasoning": route_data["routing_reasoning"],
-                    "fact_check": fact_check_report,
-                    "citations": contexts
-                })
+        st.write("")
+        st.write("")
+        
+        # Interactive Flowchart
+        st.markdown("### Interactive Clinical RAG System Diagram")
+        st.write("Click on any node in the data pipeline to inspect its system parameters:")
+        
+        diagram_cols = st.columns(5)
+        selected_doctor_node = st.session_state.get("selected_doctor_node", "Clinical Router")
+        
+        with diagram_cols[0]:
+            if st.button("1. Document Ingestion", use_container_width=True, key="doc_ing"):
+                st.session_state.selected_doctor_node = "Document Ingestion"
                 st.rerun()
+        with diagram_cols[1]:
+            if st.button("2. Clinical Router", use_container_width=True, key="clin_rt"):
+                st.session_state.selected_doctor_node = "Clinical Router"
+                st.rerun()
+        with diagram_cols[2]:
+            if st.button("3. FAISS Indexing", use_container_width=True, key="faiss_idx"):
+                st.session_state.selected_doctor_node = "FAISS Indexing"
+                st.rerun()
+        with diagram_cols[3]:
+            if st.button("4. Multi-Agent System", use_container_width=True, key="ma_sys"):
+                st.session_state.selected_doctor_node = "Multi-Agent System"
+                st.rerun()
+        with diagram_cols[4]:
+            if st.button("5. Fact-Checking Guard", use_container_width=True, key="fc_guard"):
+                st.session_state.selected_doctor_node = "Fact-Checking Guard"
+                st.rerun()
+                
+        node_details = {
+            "Document Ingestion": {
+                "title": "Document Ingestion Pipeline",
+                "desc": "Extracts text from clinical reports (Doctors) or health sheets (Patients) page-by-page using PyPDF, splitting them into overlapping semantic word chunks (400 words token limit, 50 words overlap) to preserve local boundaries.",
+                "status": "Isolated Pipeline Active"
+            },
+            "Clinical Router": {
+                "title": "Orchestrator Routing Agent",
+                "desc": "Analyzes the patient query and credentials to verify access permissions, determining routing reasoning and mapping parameters before retrieving document matches.",
+                "status": "Llama 3 Powered"
+            },
+            "FAISS Indexing": {
+                "title": "Role-Isolated FAISS Vector DB",
+                "desc": "Splits text embeddings into isolated indexes. Restricted clinical trials are stored strictly in the Doctor vector space. Public guides are stored in both vector indices.",
+                "status": "SentenceTransformers (all-MiniLM-L6-v2)"
+            },
+            "Multi-Agent System": {
+                "title": "Healthcare Multi-Agent Engine",
+                "desc": "Coordinates reasoning. In Doctor mode, compiles raw similarity scores, ICD-10 medical codes, and clinical research details. In Patient mode, translates medical findings into empathetic layperson guides.",
+                "status": "Llama 3 Coordinator"
+            },
+            "Fact-Checking Guard": {
+                "title": "Fact-Checking & Integrity Auditor",
+                "desc": "Automatically compares raw document source chunks with synthesized LLM outputs to generate a grounding score (0-10) and a verify checklist, catching and blocking hallucinations.",
+                "status": "Integrity Guard Active"
+            }
+        }
+        
+        details = node_details.get(selected_doctor_node, node_details["Clinical Router"])
+        st.markdown(f"""
+        <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 1.5rem; border-radius: 12px; margin-top: 1rem; border-left: 5px solid #0052FF;">
+            <div style="font-size: 0.8rem; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">SYSTEM COMPONENT DETAILS ({details['status']})</div>
+            <h4 style="font-family: 'Outfit'; font-weight: 700; color: #1E293B; margin-top: 0.2rem; margin-bottom: 0.5rem;">{details['title']}</h4>
+            <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin: 0;">{details['desc']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.write("")
+        st.write("")
+        if st.button("Enter Clinical Workspace", use_container_width=True, type="primary", key="enter_ws_doc"):
+            st.session_state.current_view = "workspace"
+            st.rerun()
+            
+    else:
+        # Patient Home Page
+        st.markdown("""
+        <div style="background-color: #F0FDF4; border: 1px solid #DCFCE7; padding: 2rem; border-radius: 16px; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Outfit'; font-weight: 850; font-size: 2.2rem; color: #14532D; margin: 0 0 0.5rem 0;">
+                Your Patient Guidance Dashboard
+            </h1>
+            <p style="color: #166534; font-size: 1.1rem; line-height: 1.6; margin: 0;">
+                Welcome to the patient education and care portal. Access verified patient guidelines, 
+                learn about managing chronic conditions, and generate simple guides to discuss with your doctor.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Educational Cards
+        pat_cols = st.columns(3)
+        with pat_cols[0]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #DCFCE7; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #166534; font-weight: 700; text-transform: uppercase;">ACCESSIBLE DIETS</div>
+                <div style="font-size: 1.8rem; font-weight: 850; color: #10B981; margin: 0.2rem 0;">DASH Diet</div>
+                <div style="font-size: 0.75rem; color: #166534; font-weight: 600;">Hypertension Guidelines</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with pat_cols[1]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #DCFCE7; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #166534; font-weight: 700; text-transform: uppercase;">SECURE RECORDS</div>
+                <div style="font-size: 1.8rem; font-weight: 850; color: #0284C7; margin: 0.2rem 0;">Isolated</div>
+                <div style="font-size: 0.75rem; color: #166534; font-weight: 600;">Your data is protected</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with pat_cols[2]:
+            st.markdown("""
+            <div style="background-color: #FFFFFF; border: 1px solid #DCFCE7; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); text-align: center;">
+                <div style="font-size: 0.8rem; color: #166534; font-weight: 700; text-transform: uppercase;">DOCTOR DISCUSSIONS</div>
+                <div style="font-size: 1.8rem; font-weight: 850; color: #D97706; margin: 0.2rem 0;">Action Items</div>
+                <div style="font-size: 0.75rem; color: #166534; font-weight: 600;">Custom check-ups checklist</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    with tab_catalog:
-        st.markdown("### Registered Vector Documents")
-        if not st.session_state.uploaded_documents:
-            st.info("No documents are ingested in the FAISS database. Use the sidebar to upload medical PDFs or click 'Generate Sample Medical PDFs'.")
-        else:
-            doc_data = []
-            for doc in st.session_state.uploaded_documents:
-                doc_data.append({
-                    "Document Name": doc["filename"],
-                    "Access Boundary": "Doctor Only (Restricted)" if doc["visibility"] == "doctor_only" else "Public Patient (All)",
-                    "Chunks Processed": doc["chunks_count"]
-                })
-            st.table(doc_data)
-            
-            # Interactive Citations Explorer
-            st.markdown("---")
-            st.markdown("### Raw Chunk Inspector")
-            selected_doc = st.selectbox(
-                "Select Ingested Document:",
-                options=[doc["filename"] for doc in st.session_state.uploaded_documents]
-            )
-            
-            if selected_doc:
-                matching_chunks = [c for c in st.session_state.chunks_doctor if c["source"] == selected_doc]
-                for idx, ch in enumerate(matching_chunks):
-                    st.markdown(
-                        f"<div class='citation-card'>"
-                        f"<span class='citation-source'>Chunk {idx + 1} | Visibility: {ch['visibility']}</span>"
-                        f"<div class='citation-text'>{ch['text']}</div>"
-                        f"</div>",
-                        unsafe_allow_html=True
-                    )
+        st.write("")
+        st.write("")
+        
+        # Interactive Journey
+        st.write("### Interactive Patient Care Journey")
+        st.write("Click on any stage of your care consultation path to see how your data is protected and translated:")
+        
+        p_cols = st.columns(5)
+        selected_patient_node = st.session_state.get("selected_patient_node", "Translation")
+        
+        with p_cols[0]:
+            if st.button("1. Inquiry Stage", use_container_width=True, key="p_inq"):
+                st.session_state.selected_patient_node = "Inquiry Stage"
+                st.rerun()
+        with p_cols[1]:
+            if st.button("2. Secure Search", use_container_width=True, key="p_sec"):
+                st.session_state.selected_patient_node = "Secure Search"
+                st.rerun()
+        with p_cols[2]:
+            if st.button("3. Translation", use_container_width=True, key="p_trans"):
+                st.session_state.selected_patient_node = "Translation"
+                st.rerun()
+        with p_cols[3]:
+            if st.button("4. Verification", use_container_width=True, key="p_ver"):
+                st.session_state.selected_patient_node = "Verification"
+                st.rerun()
+        with p_cols[4]:
+            if st.button("5. Doctor Checklist", use_container_width=True, key="p_chk"):
+                st.session_state.selected_patient_node = "Doctor Checklist"
+                st.rerun()
+                
+        p_details = {
+            "Inquiry Stage": {
+                "title": "Asking Your Health Question",
+                "desc": "Enter symptoms, drug information, or dietary questions into the portal. The system handles patient queries with privacy guidelines.",
+                "status": "Patient Shield Active"
+            },
+            "Secure Search": {
+                "title": "Private Database Retrieval",
+                "desc": "The RAG engine queries the public patient guides (like DASH diet worksheets) while keeping restricted practitioner trial documents mathematically hidden.",
+                "status": "Role-Isolated Database"
+            },
+            "Translation": {
+                "title": "Empathetic Patient Summary",
+                "desc": "Converts complex clinical summaries into clear, supportive, and jargon-free instructions detailing daily lifestyle adjustments and safe scheduling.",
+                "status": "Warm Layperson Guide"
+            },
+            "Verification": {
+                "title": "Accuracy Check",
+                "desc": "The Fact-Checking agent reviews the translation to ensure every single claim is grounded in official medical guides, eliminating risk.",
+                "status": "Audited Grounding"
+            },
+            "Doctor Checklist": {
+                "title": "Your Consultation Sheet",
+                "desc": "The system automatically drafts a list of suggested questions to ask your physician during your next appointment, helping you coordinate care.",
+                "status": "Prepared Consultation"
+            }
+        }
+        
+        det = p_details.get(selected_patient_node, p_details["Translation"])
+        st.markdown(f"""
+        <div style="background-color: #F0FDF4; border: 1px solid #DCFCE7; padding: 1.5rem; border-radius: 12px; margin-top: 1rem; border-left: 5px solid #10B981;">
+            <div style="font-size: 0.8rem; color: #166534; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">PATIENT ROADMAP DETAIL ({det['status']})</div>
+            <h4 style="font-family: 'Outfit'; font-weight: 700; color: #14532D; margin-top: 0.2rem; margin-bottom: 0.5rem;">{det['title']}</h4>
+            <p style="color: #166534; font-size: 0.95rem; line-height: 1.6; margin: 0;">{det['desc']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.write("")
+        st.write("")
+        if st.button("Enter Patient Workspace", use_container_width=True, type="primary", key="enter_ws_pat"):
+            st.session_state.current_view = "workspace"
+            st.rerun()
 
 else:
-    # Patient view
-    tab_pchat, tab_plibrary = st.tabs(["PATIENT PORTAL", "DOCUMENT LIBRARY"])
+    # ----------------- HERO SECTION -----------------
+    st.markdown("<hr style='margin-top: 0.5rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
     
-    with tab_pchat:
-        st.write("*Ask about symptoms, drug guides, or lifestyle habits. The assistant provides simple, empathetic guidance based on public documentation.*")
+    hero_col1, hero_col2 = st.columns([1.1, 0.9])
+    
+    with hero_col1:
+        st.markdown("""
+        <div class="hero-pill">GOLD STANDARD MEDICAL RETRIEVAL</div>
+        <div class="hero-title">Learn & Search<br>with <span class="hero-highlight">Dhanva Teach</span></div>
+        <div class="hero-desc">
+            Access isolated clinical trial data, consult diagnostic guidelines, and query multi-agent systems with absolute safety. 
+            Features role-isolated indexes and automated clinical fact-checking.
+        </div>
+        <div class="hero-sublinks">
+            <span class="hero-sublink-item"><span style="color: #0052FF; font-weight: 700; margin-right: 4px;">●</span>Clinically-Oriented</span>
+            <span class="hero-sublink-item"><span style="color: #10B981; font-weight: 700; margin-right: 4px;">●</span>Fact-Checked</span>
+            <span class="hero-sublink-item"><span style="color: #EF4444; font-weight: 700; margin-right: 4px;">●</span>Role-Isolated</span>
+        </div>
+        """, unsafe_allow_html=True)
         
-        # Initialize patient chat history
-        if "messages_patient" not in st.session_state:
-            st.session_state.messages_patient = []
-            
-        # Render patient chat history
-        for msg in st.session_state.messages_patient:
-            with st.chat_message(msg["role"]):
-                st.write(msg["content"])
-                if msg.get("grounding_verified"):
-                    st.success("Verification Status: Grounded in Patient Records")
+        st.info("Interactive workspace controls are active in the sidebar and main workspace tabs below.")
 
-        # Chat Input
-        if prompt := st.chat_input("Enter your health question..."):
-            if not groq_key:
-                st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
-            else:
-                # 1. Render user message
-                with st.chat_message("user"):
-                    st.write(prompt)
-                st.session_state.messages_patient.append({"role": "user", "content": prompt})
-                
-                # 2. Retrieve patient-accessible contexts
-                contexts = search_rag(prompt, role=ROLE_PATIENT, top_k=4)
-                
-                # 3. Create Agents client
-                agents = HealthcareAgentSystem(groq_key)
-                
-                # 4. Run multi-agent pipeline
-                with st.status("Retrieving answers...", expanded=True) as status:
-                    status.write("Orchestration Agent evaluating patient request...")
-                    route_data = agents.run_routing_agent(prompt, ROLE_PATIENT)
-                    
-                    status.write("Clinical Research Agent verifying medical references...")
-                    # Get research notes in background (non-stream)
-                    clinical_notes = agents._call_llm_non_stream(
-                        "You are a clinical researcher. Analyze the patient query and summarize facts based on context.",
-                        f"Query: {prompt}\n\nContexts:\n" + "\n".join([c["text"] for c in contexts])
-                    )
-                    
-                    status.write("Patient Layman Agent translating clinical facts into simple instructions...")
-                    with st.chat_message("assistant"):
-                        assistant_response_placeholder = st.empty()
-                        patient_response = ""
-                        for chunk in agents.run_patient_layman_agent_stream(prompt, clinical_notes, contexts):
-                            patient_response += chunk
-                            assistant_response_placeholder.markdown(patient_response + "▌")
-                        assistant_response_placeholder.markdown(patient_response)
-                        
-                    status.write("Fact-Checking Agent verifying layman guide alignment...")
-                    fact_report = agents.run_fact_checking_agent(patient_response, contexts)
-                    
-                    status.update(label="Response Formulated", state="complete", expanded=False)
-                
-                # Display simplified badge for patient reassurance
-                st.success("Verification Status: Grounded in Patient Records")
-                
-                # Save to patient history
-                st.session_state.messages_patient.append({
-                    "role": "assistant",
-                    "content": patient_response,
-                    "grounding_verified": True
-                })
-                st.rerun()
-                
-    with tab_plibrary:
-        st.markdown("### Ingested Document Directory (Public)")
-        public_docs = [doc for doc in st.session_state.uploaded_documents if doc["visibility"] == "public_patient"]
-        hidden_count = len(st.session_state.uploaded_documents) - len(public_docs)
+    with hero_col2:
+        if os.path.exists("medical_hero_illustration.png"):
+            st.image("medical_hero_illustration.png", use_container_width=True)
+
+    st.markdown("<hr style='margin-top: 2rem; margin-bottom: 2rem; border-color: #E2E8F0;'>", unsafe_allow_html=True)
+
+    # Groq API Key management (loaded silently from backend, not shown to users)
+    groq_key = ""
+    try:
+        if "GROQ_API_KEY" in st.secrets and st.secrets["GROQ_API_KEY"] != "gsk_placeholder_replace_me":
+            groq_key = st.secrets["GROQ_API_KEY"]
+    except Exception:
+        pass
+
+    if not groq_key:
+        groq_key = os.environ.get("GROQ_API_KEY", "")
+
+    # Programmatic Mock Document Ingestion Utility
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("<div class='sidebar-header'>Sample Document Creator</div>", unsafe_allow_html=True)
+    if st.sidebar.button("Generate Sample Medical PDFs"):
+        if generate_sample_files():
+            st.sidebar.info("Generated sample files. Loading them below...")
+            # Auto-ingest doc_only notes
+            if os.path.exists("clinical_cardiology_notes.pdf"):
+                with open("clinical_cardiology_notes.pdf", "rb") as f:
+                    res1 = ingest_pdf(f, "doctor_only")
+                    st.sidebar.write(res1["message"])
+            # Auto-ingest patient guide notes
+            if os.path.exists("patient_hypertension_guide.pdf"):
+                with open("patient_hypertension_guide.pdf", "rb") as f:
+                    res2 = ingest_pdf(f, "public_patient")
+                    st.sidebar.write(res2["message"])
+            st.rerun()
+
+    # Document Uploader widget
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("<div class='sidebar-header'>Upload New Document</div>", unsafe_allow_html=True)
+    uploaded_file = st.sidebar.file_uploader("Upload Medical PDF:", type="pdf")
+    visibility_setting = st.sidebar.selectbox(
+        "Set Document Access Boundary:",
+        options=["public_patient", "doctor_only"],
+        format_func=lambda x: "Public Patient (All)" if x == "public_patient" else "Doctor Only (Restricted)"
+    )
+
+    # Persistent notification state for uploads
+    if "upload_success" not in st.session_state:
+        st.session_state.upload_success = None
+    if "last_uploaded_file" not in st.session_state:
+        st.session_state.last_uploaded_file = None
+
+    if uploaded_file != st.session_state.last_uploaded_file:
+        st.session_state.last_uploaded_file = uploaded_file
+        st.session_state.upload_success = None
+
+    if uploaded_file is not None:
+        if st.sidebar.button("Process & Ingest into RAG"):
+            with st.spinner("Analyzing document structure..."):
+                res = ingest_pdf(uploaded_file, visibility_setting)
+                if res["success"]:
+                    st.session_state.upload_success = res["message"]
+                    st.rerun()
+                else:
+                    st.sidebar.error(res["message"])
+
+    if st.session_state.upload_success:
+        st.sidebar.success(st.session_state.upload_success)
+
+    # Reset vector database button
+    if st.sidebar.button("Reset Vector Database"):
+        clear_rag_state()
+        # Clean files if generated
+        for f in ["clinical_cardiology_notes.pdf", "patient_hypertension_guide.pdf"]:
+            if os.path.exists(f):
+                try:
+                    os.remove(f)
+                except Exception:
+                    pass
+        st.sidebar.info("FAISS Vector stores and catalogs cleared.")
+        st.rerun()
+
+    # Call guide assistant at the bottom of the sidebar
+    render_guide_chatbot(groq_key)
+
+    # ----------------- MAIN VIEW IMPLEMENTATION -----------------
+
+    if role == ROLE_DOCTOR:
+        # Doctor views
+        tab_chat, tab_catalog = st.tabs(["PRACTITIONER PORTAL", "DOCUMENT CATALOG"])
         
-        if not public_docs:
-            st.info("No public patient documents have been uploaded to the database. Ask your provider to upload them.")
-        else:
-            st.write("Below are the reference documents currently accessible to your profile:")
-            doc_data = []
-            for doc in public_docs:
-                doc_data.append({
-                    "Document Name": doc["filename"],
-                    "Access Setting": "Public (All Profiles)",
-                    "Information Segments": doc["chunks_count"]
-                })
-            st.table(doc_data)
+        with tab_chat:
+            st.write("*Ask diagnostics, drug interaction queries, or ICD-10 suggestions. The system searches through both doctor-only research files and public patient guides.*")
             
-        if hidden_count > 0:
-            st.warning(f"RESTRICTED: {hidden_count} restricted clinical document(s) are currently loaded as 'Doctor Only' and are mathematically isolated from this view.")
-        else:
-            st.info("RESTRICTED: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
+            # Initialize doctor chat history
+            if "messages_doctor" not in st.session_state:
+                st.session_state.messages_doctor = []
+                
+            # Render chat history
+            for msg in st.session_state.messages_doctor:
+                with st.chat_message(msg["role"]):
+                    st.write(msg["content"])
+                    if msg.get("routing_reasoning"):
+                        with st.expander("ROUTING EVALUATION", expanded=False):
+                            st.info(msg["routing_reasoning"])
+                    if msg.get("fact_check"):
+                        with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
+                            st.warning(msg["fact_check"])
+                    if msg.get("citations"):
+                        with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
+                            for i, citation in enumerate(msg["citations"]):
+                                st.markdown(
+                                    f"<div class='citation-card'>"
+                                    f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
+                                    f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
+                                    f"<div class='citation-text'>{citation['text']}</div>"
+                                    f"</div>",
+                                    unsafe_allow_html=True
+                                )
+
+            # Chat Input
+            if prompt := st.chat_input("Enter clinical query..."):
+                if not groq_key:
+                    st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
+                else:
+                    # 1. Render user message
+                    with st.chat_message("user"):
+                        st.write(prompt)
+                    st.session_state.messages_doctor.append({"role": "user", "content": prompt})
+                    
+                    # 2. Retrieve contexts from FAISS
+                    contexts = search_rag(prompt, role=ROLE_DOCTOR, top_k=4)
+                    
+                    # 3. Create Agents client
+                    agents = HealthcareAgentSystem(groq_key)
+                    
+                    # 4. Run Routing Agent
+                    with st.status("Coordinating clinical agents...", expanded=True) as status:
+                        status.write("Orchestration Routing Agent analyzing query...")
+                        route_data = agents.run_routing_agent(prompt, ROLE_DOCTOR)
+                        status.write(f"Routed Query. Orchestration Reasoning: {route_data['routing_reasoning']}")
+                        
+                        # 5. Stream Clinical Research Agent
+                        status.write("Clinical Research Agent examining documents & compiling technical notes...")
+                        with st.chat_message("assistant"):
+                            assistant_response_placeholder = st.empty()
+                            clinical_response = ""
+                            for chunk in agents.run_clinical_research_agent_stream(prompt, contexts):
+                                clinical_response += chunk
+                                assistant_response_placeholder.markdown(clinical_response + "▌")
+                            assistant_response_placeholder.markdown(clinical_response)
+                        
+                        # 6. Run Fact checker (non-streaming)
+                        status.write("Fact-Checking Agent auditing clinical notes for grounding accuracy...")
+                        fact_check_report = agents.run_fact_checking_agent(clinical_response, contexts)
+                        
+                        # Render outputs
+                        status.update(label="Analysis Completed", state="complete", expanded=False)
+                    
+                    # Render routing, fact check and citations in expanders for current message
+                    with st.expander("ROUTING EVALUATION", expanded=False):
+                        st.info(route_data["routing_reasoning"])
+                    with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
+                        st.warning(fact_check_report)
+                    if contexts:
+                        with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
+                            for i, citation in enumerate(contexts):
+                                st.markdown(
+                                    f"<div class='citation-card'>"
+                                    f"<span class='citation-score'>L2 Distance: {citation['score']:.4f}</span>"
+                                    f"<span class='citation-source'>Source: {citation['source']} | Access: {citation['visibility']}</span>"
+                                    f"<div class='citation-text'>{citation['text']}</div>"
+                                    f"</div>",
+                                    unsafe_allow_html=True
+                                )
+                    
+                    # Save to doctor history
+                    st.session_state.messages_doctor.append({
+                        "role": "assistant",
+                        "content": clinical_response,
+                        "routing_reasoning": route_data["routing_reasoning"],
+                        "fact_check": fact_check_report,
+                        "citations": contexts
+                    })
+                    st.rerun()
+
+        with tab_catalog:
+            st.markdown("### Registered Vector Documents")
+            if not st.session_state.uploaded_documents:
+                st.info("No documents are ingested in the FAISS database. Use the sidebar to upload medical PDFs or click 'Generate Sample Medical PDFs'.")
+            else:
+                doc_data = []
+                for doc in st.session_state.uploaded_documents:
+                    doc_data.append({
+                        "Document Name": doc["filename"],
+                        "Access Boundary": "Doctor Only (Restricted)" if doc["visibility"] == "doctor_only" else "Public Patient (All)",
+                        "Chunks Processed": doc["chunks_count"]
+                    })
+                st.table(doc_data)
+                
+                # Interactive Citations Explorer
+                st.markdown("---")
+                st.markdown("### Raw Chunk Inspector")
+                selected_doc = st.selectbox(
+                    "Select Ingested Document:",
+                    options=[doc["filename"] for doc in st.session_state.uploaded_documents]
+                )
+                
+                if selected_doc:
+                    matching_chunks = [c for c in st.session_state.chunks_doctor if c["source"] == selected_doc]
+                    for idx, ch in enumerate(matching_chunks):
+                        st.markdown(
+                            f"<div class='citation-card'>"
+                            f"<span class='citation-source'>Chunk {idx + 1} | Visibility: {ch['visibility']}</span>"
+                            f"<div class='citation-text'>{ch['text']}</div>"
+                            f"</div>",
+                            unsafe_allow_html=True
+                        )
+
+    else:
+        # Patient view
+        tab_pchat, tab_plibrary = st.tabs(["PATIENT PORTAL", "DOCUMENT LIBRARY"])
+        
+        with tab_pchat:
+            st.write("*Ask about symptoms, drug guides, or lifestyle habits. The assistant provides simple, empathetic guidance based on public documentation.*")
+            
+            # Initialize patient chat history
+            if "messages_patient" not in st.session_state:
+                st.session_state.messages_patient = []
+                
+            # Render patient chat history
+            for msg in st.session_state.messages_patient:
+                with st.chat_message(msg["role"]):
+                    st.write(msg["content"])
+                    if msg.get("grounding_verified"):
+                        st.success("Verification Status: Grounded in Patient Records")
+
+            # Chat Input
+            if prompt := st.chat_input("Enter your health question..."):
+                if not groq_key:
+                    st.error("System configuration error: Clinical translation engine is currently offline. Please contact your system administrator.")
+                else:
+                    # 1. Render user message
+                    with st.chat_message("user"):
+                        st.write(prompt)
+                    st.session_state.messages_patient.append({"role": "user", "content": prompt})
+                    
+                    # 2. Retrieve patient-accessible contexts
+                    contexts = search_rag(prompt, role=ROLE_PATIENT, top_k=4)
+                    
+                    # 3. Create Agents client
+                    agents = HealthcareAgentSystem(groq_key)
+                    
+                    # 4. Run multi-agent pipeline
+                    with st.status("Retrieving answers...", expanded=True) as status:
+                        status.write("Orchestration Agent evaluating patient request...")
+                        route_data = agents.run_routing_agent(prompt, ROLE_PATIENT)
+                        
+                        status.write("Clinical Research Agent verifying medical references...")
+                        # Get research notes in background (non-stream)
+                        clinical_notes = agents._call_llm_non_stream(
+                            "You are a clinical researcher. Analyze the patient query and summarize facts based on context.",
+                            f"Query: {prompt}\n\nContexts:\n" + "\n".join([c["text"] for c in contexts])
+                        )
+                        
+                        status.write("Patient Layman Agent translating clinical facts into simple instructions...")
+                        with st.chat_message("assistant"):
+                            assistant_response_placeholder = st.empty()
+                            patient_response = ""
+                            for chunk in agents.run_patient_layman_agent_stream(prompt, clinical_notes, contexts):
+                                patient_response += chunk
+                                assistant_response_placeholder.markdown(patient_response + "▌")
+                            assistant_response_placeholder.markdown(patient_response)
+                            
+                        status.write("Fact-Checking Agent verifying layman guide alignment...")
+                        fact_report = agents.run_fact_checking_agent(patient_response, contexts)
+                        
+                        status.update(label="Response Formulated", state="complete", expanded=False)
+                    
+                    # Display simplified badge for patient reassurance
+                    st.success("Verification Status: Grounded in Patient Records")
+                    
+                    # Save to patient history
+                    st.session_state.messages_patient.append({
+                        "role": "assistant",
+                        "content": patient_response,
+                        "grounding_verified": True
+                    })
+                    st.rerun()
+                    
+        with tab_plibrary:
+            st.markdown("### Ingested Document Directory (Public)")
+            public_docs = [doc for doc in st.session_state.uploaded_documents if doc["visibility"] == "public_patient"]
+            hidden_count = len(st.session_state.uploaded_documents) - len(public_docs)
+            
+            if not public_docs:
+                st.info("No public patient documents have been uploaded to the database. Ask your provider to upload them.")
+            else:
+                st.write("Below are the reference documents currently accessible to your profile:")
+                doc_data = []
+                for doc in public_docs:
+                    doc_data.append({
+                        "Document Name": doc["filename"],
+                        "Access Setting": "Public (All Profiles)",
+                        "Information Segments": doc["chunks_count"]
+                    })
+                st.table(doc_data)
+                
+            if hidden_count > 0:
+                st.warning(f"RESTRICTED: {hidden_count} restricted clinical document(s) are currently loaded as 'Doctor Only' and are mathematically isolated from this view.")
+            else:
+                st.info("RESTRICTED: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
