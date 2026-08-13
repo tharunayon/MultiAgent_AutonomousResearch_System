@@ -28,8 +28,7 @@ def render_auth_sidebar():
     """Renders the authentication/role selection widget in the Streamlit sidebar."""
     init_auth()
     
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🔐 Role-Based Access Control")
+    st.sidebar.markdown("<div class='sidebar-header'>Role-Based Access Control</div>", unsafe_allow_html=True)
     
     # Map raw role string to user-friendly label
     current_label = ROLE_LABELS[st.session_state.user_role]

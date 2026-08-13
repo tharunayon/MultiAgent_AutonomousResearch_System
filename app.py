@@ -7,7 +7,7 @@ from agents.health_agents import HealthcareAgentSystem
 # Page configuration
 st.set_page_config(
     page_title="Dhanva Teach - Multi-Agent Portal",
-    page_icon="🎓",
+    page_icon="logo.svg",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -143,12 +143,26 @@ st.markdown("""
         margin-top: 0.5rem;
         font-style: italic;
     }
+
+    /* Professional Sidebar Header styling */
+    .sidebar-header {
+        font-family: 'Outfit', sans-serif !important;
+        color: #1E293B;
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin-top: 1.5rem;
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 0.3rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 GUIDE_RESPONSES = {
-    "role": "To switch roles, select the option under '🔐 Role-Based Access Control' in the sidebar. You can select either 'Authorized Medical Practitioner (Doctor)' or 'Normal Patient'. This determines the document access boundary (filtering the RAG data) and query response style.",
-    "switch": "To switch roles, select the option under '🔐 Role-Based Access Control' in the sidebar. You can select either 'Authorized Medical Practitioner (Doctor)' or 'Normal Patient'. This determines the document access boundary (filtering the RAG data) and query response style.",
+    "role": "To switch roles, select the option under 'Role-Based Access Control' in the sidebar. You can select either 'Authorized Medical Practitioner (Doctor)' or 'Normal Patient'. This determines the document access boundary (filtering the RAG data) and query response style.",
+    "switch": "To switch roles, select the option under 'Role-Based Access Control' in the sidebar. You can select either 'Authorized Medical Practitioner (Doctor)' or 'Normal Patient'. This determines the document access boundary (filtering the RAG data) and query response style.",
     "doctor": "The Doctor view provides clinical evaluations of RAG files, shows raw citations with FAISS L2 similarity scores, ICD-10 medical codes, research trials, and a Fact-Checking agent audit report to block hallucinations.",
     "patient": "The Patient view provides simplified summaries of RAG files, empathetic language, structured action steps, and a list of questions to ask their doctor. Technical trials and restricted clinical documents are completely hidden.",
     "rag": "RAG (Retrieval-Augmented Generation) reads uploaded PDFs, breaks them into small text blocks, creates vectors using a local HuggingFace embedding model, and saves them in FAISS. The system has two isolated indexes: one for public patient guide files, and one for restricted doctor documents.",
@@ -160,7 +174,7 @@ GUIDE_RESPONSES = {
 
 def render_guide_chatbot(groq_key):
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🤖 Portal Guide Assistant")
+    st.sidebar.markdown("<div class='sidebar-header'>Portal Guide Assistant</div>", unsafe_allow_html=True)
     
     # Initialize history for guide chatbot
     if "guide_history" not in st.session_state:
@@ -170,7 +184,7 @@ def render_guide_chatbot(groq_key):
         
     # Render guide history in a compact area
     for chat in st.session_state.guide_history:
-        role_label = "👤 You" if chat["role"] == "user" else "🤖 Guide"
+        role_label = "USER" if chat["role"] == "user" else "GUIDE"
         st.sidebar.caption(f"**{role_label}**: {chat['content']}")
         
     # Form input with unique key to prevent input overlapping
@@ -339,13 +353,13 @@ with col_nav_left:
 with col_nav_right:
     role = get_user_role()
     if role == ROLE_DOCTOR:
-        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-doctor'>🩺 Practitioner Mode</span></div>"
+        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-doctor'>CLINICAL ACCESS</span></div>"
     else:
-        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-patient'>👤 Patient Mode</span></div>"
+        badge_html = "<div style='text-align: right; margin-top: 12px;'><span class='role-badge badge-patient'>PATIENT ACCESS</span></div>"
     st.markdown(badge_html, unsafe_allow_html=True)
 
 # ----------------- SIDEBAR CONTROLS -----------------
-st.sidebar.markdown("### 🛡️ Portal Management")
+st.sidebar.markdown("<div class='sidebar-header'>Portal Management</div>", unsafe_allow_html=True)
 
 # Render role selector switcher
 render_auth_sidebar()
@@ -357,20 +371,20 @@ hero_col1, hero_col2 = st.columns([1.1, 0.9])
 
 with hero_col1:
     st.markdown("""
-    <div class="hero-pill">✨ Gold Standard Medical Retrieval</div>
+    <div class="hero-pill">GOLD STANDARD MEDICAL RETRIEVAL</div>
     <div class="hero-title">Learn & Search<br>with <span class="hero-highlight">Dhanva Teach</span></div>
     <div class="hero-desc">
         Access isolated clinical trial data, consult diagnostic guidelines, and query multi-agent systems with absolute safety. 
         Features role-isolated indexes and automated clinical fact-checking.
     </div>
     <div class="hero-sublinks">
-        <span class="hero-sublink-item">🏥 Clinically-Oriented</span>
-        <span class="hero-sublink-item">🛡️ Fact-Checked</span>
-        <span class="hero-sublink-item">🔒 Role-Isolated</span>
+        <span class="hero-sublink-item"><span style="color: #0052FF; font-weight: 700; margin-right: 4px;">●</span>Clinically-Oriented</span>
+        <span class="hero-sublink-item"><span style="color: #10B981; font-weight: 700; margin-right: 4px;">●</span>Fact-Checked</span>
+        <span class="hero-sublink-item"><span style="color: #EF4444; font-weight: 700; margin-right: 4px;">●</span>Role-Isolated</span>
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("🚀 Enter Portal Workspace", key="enter_workspace"):
+    if st.button("Enter Portal Workspace", key="enter_workspace"):
         st.info("Scroll down to access the interactive portal workspace.")
 
 with hero_col2:
@@ -392,8 +406,8 @@ if not groq_key:
 
 # Programmatic Mock Document Ingestion Utility
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🛠️ Sample Document Creator")
-if st.sidebar.button("📁 Generate Sample Medical PDFs"):
+st.sidebar.markdown("<div class='sidebar-header'>Sample Document Creator</div>", unsafe_allow_html=True)
+if st.sidebar.button("Generate Sample Medical PDFs"):
     if generate_sample_files():
         st.sidebar.info("Generated sample files. Loading them below...")
         # Auto-ingest doc_only notes
@@ -410,7 +424,7 @@ if st.sidebar.button("📁 Generate Sample Medical PDFs"):
 
 # Document Uploader widget
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📤 Upload New Document")
+st.sidebar.markdown("<div class='sidebar-header'>Upload New Document</div>", unsafe_allow_html=True)
 uploaded_file = st.sidebar.file_uploader("Upload Medical PDF:", type="pdf")
 visibility_setting = st.sidebar.selectbox(
     "Set Document Access Boundary:",
@@ -429,7 +443,7 @@ if uploaded_file != st.session_state.last_uploaded_file:
     st.session_state.upload_success = None
 
 if uploaded_file is not None:
-    if st.sidebar.button("📥 Process & Ingest into RAG"):
+    if st.sidebar.button("Process & Ingest into RAG"):
         with st.spinner("Analyzing document structure..."):
             res = ingest_pdf(uploaded_file, visibility_setting)
             if res["success"]:
@@ -442,7 +456,7 @@ if st.session_state.upload_success:
     st.sidebar.success(st.session_state.upload_success)
 
 # Reset vector database button
-if st.sidebar.button("🗑️ Reset Vector Database"):
+if st.sidebar.button("Reset Vector Database"):
     clear_rag_state()
     # Clean files if generated
     for f in ["clinical_cardiology_notes.pdf", "patient_hypertension_guide.pdf"]:
@@ -461,10 +475,10 @@ render_guide_chatbot(groq_key)
 
 if role == ROLE_DOCTOR:
     # Doctor views
-    tab_chat, tab_catalog = st.tabs(["💬 Practitioner Chat Portal", "📑 Reference Documents Catalog"])
+    tab_chat, tab_catalog = st.tabs(["PRACTITIONER PORTAL", "DOCUMENT CATALOG"])
     
     with tab_chat:
-        st.write("💡 *Ask diagnostics, drug interaction queries, or ICD-10 suggestions. The system searches through both doctor-only research files and public patient guides.*")
+        st.write("*Ask diagnostics, drug interaction queries, or ICD-10 suggestions. The system searches through both doctor-only research files and public patient guides.*")
         
         # Initialize doctor chat history
         if "messages_doctor" not in st.session_state:
@@ -475,13 +489,13 @@ if role == ROLE_DOCTOR:
             with st.chat_message(msg["role"]):
                 st.write(msg["content"])
                 if msg.get("routing_reasoning"):
-                    with st.expander("🔍 Orchestrator Routing Reason", expanded=False):
+                    with st.expander("ROUTING EVALUATION", expanded=False):
                         st.info(msg["routing_reasoning"])
                 if msg.get("fact_check"):
-                    with st.expander("🛡️ Fact-Checker Report", expanded=False):
+                    with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
                         st.warning(msg["fact_check"])
                 if msg.get("citations"):
-                    with st.expander("📚 Matched Chunks (FAISS Similarity)", expanded=False):
+                    with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
                         for i, citation in enumerate(msg["citations"]):
                             st.markdown(
                                 f"<div class='citation-card'>"
@@ -509,7 +523,7 @@ if role == ROLE_DOCTOR:
                 agents = HealthcareAgentSystem(groq_key)
                 
                 # 4. Run Routing Agent
-                with st.status("🧠 Agents coordinating...", expanded=True) as status:
+                with st.status("Coordinating clinical agents...", expanded=True) as status:
                     status.write("Orchestration Routing Agent analyzing query...")
                     route_data = agents.run_routing_agent(prompt, ROLE_DOCTOR)
                     status.write(f"Routed Query. Orchestration Reasoning: {route_data['routing_reasoning']}")
@@ -532,12 +546,12 @@ if role == ROLE_DOCTOR:
                     status.update(label="Analysis Completed", state="complete", expanded=False)
                 
                 # Render routing, fact check and citations in expanders for current message
-                with st.expander("🔍 Orchestrator Routing Reason", expanded=False):
+                with st.expander("ROUTING EVALUATION", expanded=False):
                     st.info(route_data["routing_reasoning"])
-                with st.expander("🛡️ Fact-Checker Report", expanded=False):
+                with st.expander("INTEGRITY AUDIT REPORT", expanded=False):
                     st.warning(fact_check_report)
                 if contexts:
-                    with st.expander("📚 Matched Chunks (FAISS Similarity)", expanded=False):
+                    with st.expander("VERIFIED CONTEXT REFERENCES", expanded=False):
                         for i, citation in enumerate(contexts):
                             st.markdown(
                                 f"<div class='citation-card'>"
@@ -559,7 +573,7 @@ if role == ROLE_DOCTOR:
                 st.rerun()
 
     with tab_catalog:
-        st.markdown("### 🗃️ Registered Vector Documents")
+        st.markdown("### Registered Vector Documents")
         if not st.session_state.uploaded_documents:
             st.info("No documents are ingested in the FAISS database. Use the sidebar to upload medical PDFs or click 'Generate Sample Medical PDFs'.")
         else:
@@ -574,7 +588,7 @@ if role == ROLE_DOCTOR:
             
             # Interactive Citations Explorer
             st.markdown("---")
-            st.markdown("### 🔍 Raw Chunk Inspector")
+            st.markdown("### Raw Chunk Inspector")
             selected_doc = st.selectbox(
                 "Select Ingested Document:",
                 options=[doc["filename"] for doc in st.session_state.uploaded_documents]
@@ -593,10 +607,10 @@ if role == ROLE_DOCTOR:
 
 else:
     # Patient view
-    tab_pchat, tab_plibrary = st.tabs(["💬 Patient Chat Portal", "📖 Patient Document Library"])
+    tab_pchat, tab_plibrary = st.tabs(["PATIENT PORTAL", "DOCUMENT LIBRARY"])
     
     with tab_pchat:
-        st.write("💡 *Ask about symptoms, drug guides, or lifestyle habits. The assistant provides simple, empathetic guidance based on public documentation.*")
+        st.write("*Ask about symptoms, drug guides, or lifestyle habits. The assistant provides simple, empathetic guidance based on public documentation.*")
         
         # Initialize patient chat history
         if "messages_patient" not in st.session_state:
@@ -607,7 +621,7 @@ else:
             with st.chat_message(msg["role"]):
                 st.write(msg["content"])
                 if msg.get("grounding_verified"):
-                    st.success("✔ Verification Status: Grounded in Patient Records")
+                    st.success("Verification Status: Grounded in Patient Records")
 
         # Chat Input
         if prompt := st.chat_input("Enter your health question..."):
@@ -626,7 +640,7 @@ else:
                 agents = HealthcareAgentSystem(groq_key)
                 
                 # 4. Run multi-agent pipeline
-                with st.status("🔍 Portal retrieving answers...", expanded=True) as status:
+                with st.status("Retrieving answers...", expanded=True) as status:
                     status.write("Orchestration Agent evaluating patient request...")
                     route_data = agents.run_routing_agent(prompt, ROLE_PATIENT)
                     
@@ -652,7 +666,7 @@ else:
                     status.update(label="Response Formulated", state="complete", expanded=False)
                 
                 # Display simplified badge for patient reassurance
-                st.success("✔ Verification Status: Grounded in Patient Records")
+                st.success("Verification Status: Grounded in Patient Records")
                 
                 # Save to patient history
                 st.session_state.messages_patient.append({
@@ -663,7 +677,7 @@ else:
                 st.rerun()
                 
     with tab_plibrary:
-        st.markdown("### 📖 Ingested Document Directory (Public)")
+        st.markdown("### Ingested Document Directory (Public)")
         public_docs = [doc for doc in st.session_state.uploaded_documents if doc["visibility"] == "public_patient"]
         hidden_count = len(st.session_state.uploaded_documents) - len(public_docs)
         
@@ -681,6 +695,6 @@ else:
             st.table(doc_data)
             
         if hidden_count > 0:
-            st.warning(f"🔒 Note: {hidden_count} restricted clinical document(s) are currently loaded as 'Doctor Only' and are mathematically isolated from this view.")
+            st.warning(f"RESTRICTED: {hidden_count} restricted clinical document(s) are currently loaded as 'Doctor Only' and are mathematically isolated from this view.")
         else:
-            st.info("🔒 Note: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
+            st.info("RESTRICTED: Some clinical trial data or technical diagnostic reports are restricted to Medical Practitioners (Doctors) only and are hidden from this view.")
